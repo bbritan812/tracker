@@ -50,7 +50,7 @@
             flex: 1;
             text-align: center;
             padding: 10px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             color: var(--text-muted);
             cursor: pointer;
@@ -61,53 +61,6 @@
         .tab.active {
             background: var(--accent-color);
             color: var(--text-main);
-        }
-
-        /* Блок ИИ-помощника */
-        .ai-container {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 16px;
-        }
-
-        .ai-header {
-            font-size: 11px;
-            color: var(--accent-color);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .ai-input-group {
-            display: flex;
-            gap: 8px;
-        }
-
-        .ai-send-btn {
-            background: var(--accent-color);
-            color: var(--text-main);
-            border: none;
-            border-radius: 10px;
-            padding: 0 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .ai-send-btn:hover {
-            background: var(--accent-hover);
-        }
-
-        .ai-response {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-top: 10px;
-            padding-top: 8px;
-            border-top: 1px solid var(--border-color);
-            display: none;
         }
 
         .stats-grid {
@@ -237,6 +190,93 @@
             background: var(--accent-hover);
         }
 
+        /* ЧАТ С ИИ */
+        .chat-container {
+            display: none;
+            flex-direction: column;
+            height: calc(100vh - 140px);
+            max-height: 500px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 80px;
+        }
+
+        .chat-container.active {
+            display: flex;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .chat-bubble {
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .chat-bubble.user {
+            background: var(--accent-color);
+            color: var(--text-main);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-bubble.ai {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 10px;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            gap: 8px;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px;
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .chat-input:focus {
+            border-color: var(--accent-color);
+        }
+
+        .chat-send-btn {
+            background: var(--accent-color);
+            color: var(--text-main);
+            border: none;
+            border-radius: 10px;
+            padding: 0 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .chat-send-btn:hover {
+            background: var(--accent-hover);
+        }
+
         /* Модальное окно */
         .modal {
             display: none;
@@ -339,35 +379,38 @@
     <div class="tabs">
         <div class="tab active" onclick="switchTab('today', event)">Сегодня</div>
         <div class="tab" onclick="switchTab('week', event)">Неделя</div>
+        <div class="tab" onclick="switchTab('chat', event)">💀 ИИ Чат</div>
     </div>
 
-    <!-- Блок ИИ-помощника -->
-    <div class="ai-container">
-        <div class="ai-header">💀 BLACKOUT AI MANAGER</div>
-        <div class="ai-input-group">
-            <input type="text" id="aiInput" class="form-input" placeholder="Например: 3ч на бит и 2к на софт...">
-            <button type="button" id="aiSendBtn" class="ai-send-btn">OK</button>
+    <!-- Вкладки Трекера -->
+    <div id="trackerMainView">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Часы</div>
+                <div class="stat-value" id="totalHours">0ч</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Расходы</div>
+                <div class="stat-value" id="totalMoney">0 ₽</div>
+            </div>
         </div>
-        <div id="aiResponse" class="ai-response"></div>
-    </div>
 
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-label">Часы</div>
-            <div class="stat-value" id="totalHours">0ч</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">Расходы</div>
-            <div class="stat-value" id="totalMoney">0 ₽</div>
+        <div class="section-title">Записи</div>
+        <div class="records-list" id="recordsList">
+            <div class="empty-state">Пока нет записей</div>
         </div>
     </div>
 
-    <div class="section-title">Записи</div>
-    <div class="records-list" id="recordsList">
-        <div class="empty-state">Пока нет записей</div>
+    <!-- Вкладка Чат с ИИ -->
+    <div class="chat-container" id="chatContainer">
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Напиши что-нибудь ИИ...">
+            <button type="button" id="chatSendBtn" class="chat-send-btn">Send</button>
+        </div>
     </div>
 
-    <button class="add-btn" onclick="openModal()">+ Добавить запись</button>
+    <button class="add-btn" id="mainAddBtn" onclick="openModal()">+ Добавить запись</button>
 
     <!-- Модальное окно -->
     <div class="modal" id="recordModal">
@@ -406,12 +449,36 @@
     <script>
         let currentTab = 'today';
         let records = JSON.parse(localStorage.getItem('tracker_records')) || [];
+        let chatHistory = JSON.parse(localStorage.getItem('tracker_chat')) || [
+            { sender: 'ai', text: '💀 BLACKOUT AI MANAGER на связи. Накидывай темп, часы или расходы — разберу и запишу.' }
+        ];
+
+        const numberWords = {
+            'один': 1, 'одна': 1, 'два': 2, 'две': 2, 'три': 3, 'четыре': 4,
+            'пять': 5, 'шесть': 6, 'семь': 7, 'восемь': 8, 'девять': 9, 'десять': 10,
+            'полтора': 1.5, 'полутора': 1.5
+        };
 
         function switchTab(tab, event) {
             currentTab = tab;
             document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
             event.target.classList.add('active');
-            render();
+
+            const mainView = document.getElementById('trackerMainView');
+            const chatView = document.getElementById('chatContainer');
+            const addBtn = document.getElementById('mainAddBtn');
+
+            if (tab === 'chat') {
+                mainView.style.display = 'none';
+                chatView.classList.add('active');
+                addBtn.style.display = 'none';
+                renderChat();
+            } else {
+                mainView.style.display = 'block';
+                chatView.classList.remove('active');
+                addBtn.style.display = 'block';
+                render();
+            }
         }
 
         function openModal() {
@@ -425,7 +492,6 @@
 
         function saveRecord(e) {
             e.preventDefault();
-            
             const title = document.getElementById('recTitle').value;
             const category = document.getElementById('recCategory').value;
             const hours = parseFloat(document.getElementById('recHours').value) || 0;
@@ -453,42 +519,29 @@
             render();
         }
 
-        // Инициализация ИИ-помощника
-        document.addEventListener('DOMContentLoaded', () => {
-            const aiSendBtn = document.getElementById('aiSendBtn');
-            const aiInput = document.getElementById('aiInput');
-
-            if (aiSendBtn) {
-                aiSendBtn.addEventListener('click', handleAIPrompt);
-                aiInput.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') handleAIPrompt();
-                });
-            }
-        });
-
-        // Умный локальный парсер для ИИ
-        function handleAIPrompt() {
-            const inputField = document.getElementById('aiInput');
-            const responseBox = document.getElementById('aiResponse');
-            const rawText = inputField.value.trim();
+        // Интеллектуальный парсер (цифры и слова)
+        function parseInputText(rawText) {
             const text = rawText.toLowerCase();
-
-            if (!text) return;
-
-            responseBox.style.display = 'block';
-            responseBox.textContent = '💀 ИИ анализирует запрос...';
-
             let hours = 0;
             let money = 0;
             let category = 'Прочее';
 
-            // Ищем часы (например: 3ч, 2 часа, 1.5 часа)
+            // 1. Ищем часы через цифры (например: 3ч, 2 часа, 1.5 часа)
             const hourMatch = text.match(/(\d+[\.,]?\d*)\s*(ч|час|часов)/);
             if (hourMatch) {
                 hours = parseFloat(hourMatch[1].replace(',', '.'));
+            } else {
+                // Ищем часы через слова (например: три часа, полтора часа)
+                for (let word in numberWords) {
+                    const regex = new RegExp(`(${word})\\s*(ч|час|часов)`);
+                    if (regex.test(text)) {
+                        hours = numberWords[word];
+                        break;
+                    }
+                }
             }
 
-            // Ищем деньги (например: 2000, 2к, 500р, 1.5к)
+            // 2. Ищем деньги (например: 2000, 2к, 500р, 1.5к)
             const moneyMatch = text.match(/(\d+[\.,]?\d*)\s*(к|тыс|р|руб)/);
             if (moneyMatch) {
                 let val = parseFloat(moneyMatch[1].replace(',', '.'));
@@ -498,41 +551,83 @@
                 money = val;
             }
 
-            // Определяем категорию по ключевым словам
+            // 3. Определяем категорию
             if (text.includes('бит') || text.includes('свод') || text.includes('софт') || text.includes('фл') || text.includes('музык') || text.includes('трек')) {
                 category = 'Музыка';
             } else if (text.includes('учеб') || text.includes('огэ') || text.includes('книг') || text.includes('курс')) {
                 category = 'Учеба';
-            } else if (text.includes('еда') || text.includes('шаурм') || text.includes('кофе') || text.includes('купил') || text.includes('трат') || text.includes('магазин') || text.includes('кафе')) {
+            } else if (text.includes('еда') || text.includes('шаурм') || text.includes('кофе') || text.includes('купил') || text.includes('трат') || text.includes('магазин') || text.includes('кафе') || text.includes('доставк')) {
                 category = 'Траты';
             }
 
-            setTimeout(() => {
+            return { hours, money, category };
+        }
+
+        // Обработка сообщений в чате
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatSendBtn = document.getElementById('chatSendBtn');
+            const chatInput = document.getElementById('chatInput');
+
+            if (chatSendBtn) {
+                chatSendBtn.addEventListener('click', handleChatMessage);
+                chatInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') handleChatMessage();
+                });
+            }
+            render();
+        });
+
+        function handleChatMessage() {
+            const inputField = document.getElementById('chatInput');
+            const rawText = inputField.value.trim();
+            if (!rawText) return;
+
+            // Добавляем сообщение пользователя в чат
+            chatHistory.push({ sender: 'user', text: rawText });
+            inputField.value = '';
+            renderChat();
+
+            // Парсим и заносим запись в трекер
+            const parsed = parseInputText(rawText);
+            
+            if (parsed.hours > 0 || parsed.money > 0) {
                 const newRecord = {
                     id: Date.now(),
                     title: rawText,
-                    category,
-                    hours,
-                    money,
+                    category: parsed.category,
+                    hours: parsed.hours,
+                    money: parsed.money,
                     date: new Date().toISOString()
                 };
-
                 records.unshift(newRecord);
                 localStorage.setItem('tracker_records', JSON.stringify(records));
-                render();
+            }
 
-                let reply = `💀 Записано в категорию «${category}».`;
-                if (hours > 0 && money > 0) {
-                    reply = `💀 Учтено: ${hours}ч и ${money.toLocaleString('ru-RU')} ₽ («${category}»). Плотный темп.`;
-                } else if (hours > 0) {
-                    reply = `💀 Зафиксировано: ${hours}ч в категории «${category}». База.`;
-                } else if (money > 0) {
-                    reply = `💀 Траты зафиксированы: ${money.toLocaleString('ru-RU')} ₽ («${category}»).`;
+            // Ответ ИИ
+            setTimeout(() => {
+                let reply = `💀 Записано в категорию «${parsed.category}».`;
+                if (parsed.hours > 0 && parsed.money > 0) {
+                    reply = `💀 Учтено: ${parsed.hours}ч и ${parsed.money.toLocaleString('ru-RU')} ₽ («${parsed.category}»). Плотный темп.`;
+                } else if (parsed.hours > 0) {
+                    reply = `💀 Зафиксировано: ${parsed.hours}ч в категории «${parsed.category}». База.`;
+                } else if (parsed.money > 0) {
+                    reply = `💀 Траты зафиксированы: ${parsed.money.toLocaleString('ru-RU')} ₽ («${parsed.category}»).`;
+                } else {
+                    reply = `💀 Принято. Но в сообщении нет явных часов или трат, в трекер не падало.`;
                 }
 
-                responseBox.textContent = reply;
-                inputField.value = '';
-            }, 400);
+                chatHistory.push({ sender: 'ai', text: reply });
+                localStorage.setItem('tracker_chat', JSON.stringify(chatHistory));
+                renderChat();
+            }, 300);
+        }
+
+        function renderChat() {
+            const messagesContainer = document.getElementById('chatMessages');
+            messagesContainer.innerHTML = chatHistory.map(msg => `
+                <div class="chat-bubble ${msg.sender}">${msg.text}</div>
+            `).join('');
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
 
         function render() {
@@ -584,9 +679,6 @@
                 </div>
             `).join('');
         }
-
-        render();
     </script>
 </body>
-</html> 
- 
+</html>
