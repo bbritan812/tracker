@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Tracker</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  :root {
+    --bg: #0f0f12;
+    --bg-elevated: #17171c;
+    --bg-card: #1c1c22;
+    --border: #2a2a32;
+    --text: #f2f2f2;
+    --text-secondary: #8b8b93;
+    --accent: #7c6cf6;
+    --accent-soft: rgba(124, 108, 246, 0.15);
+    --music: #7c6cf6;
+    --study: #4fd1c5;
+    --personal: #f6a05a;
+    --danger: #f65c6c;
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+    padding: 16px 16px 100px;
+    min-height: 100vh;
+  }
+
+  h1 { font-size: 20px; font-weight: 700; margin: 4px 0 20px; letter-spacing: -0.3px; }
+
+  .tabs {
+    display: flex;
+    background: var(--bg-elevated);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 20px;
+  }
+  .tab {
+    flex: 1;
+    text-align: center;
+    padding: 9px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border-radius: 9px;
+    cursor: pointer;
+    transition: all .15s ease;
+    user-select: none;
+  }
+  .tab.active { background: var(--accent); color: #fff; }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+  }
+  .stat-card .label { font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; }
+  .stat-card .value { font-size: 20px; font-weight: 700; }
+  .stat-card .value.hours { color: var(--music); }
+  .stat-card .value.money { color: var(--personal); }
+
+  .cat-bars { margin-bottom: 24px; }
+  .cat-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .cat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .cat-name { font-size: 13px; width: 64px; flex-shrink: 0; color: var(--text-secondary); }
+  .cat-track {
+    flex: 1;
+    height: 6px;
+    background: var(--bg-elevated);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .cat-fill { height: 100%; border-radius: 4px; transition: width .3s ease; }
+  .cat-val { font-size: 12px; color: var(--text-secondary); width: 56px; text-align: right; flex-shrink: 0; }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 20px 0 10px;
+  }
+
+  .entry {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+  }
+  .entry-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .entry-info { flex: 1; min-width: 0; }
+  .entry-cat { font-size: 14px; font-weight: 600; }
+  .entry-time { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .entry-val { font-size: 15px; font-weight: 700; flex-shrink: 0; }
+  .entry-del {
+    color: var(--text-secondary);
+    font-size: 18px;
+    padding: 4px 6px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .empty {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 13px;
+    padding: 30px 0;
+  }
+
+  .fab {
+    position: fixed;
+    bottom: 24px;
+    left: 16px;
+    right: 16px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 16px;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .sheet-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: flex-end;
+    z-index: 50;
+  }
+  .sheet-overlay.open { display: flex; }
+  .sheet {
+    background: var(--bg-elevated);
+    width: 100%;
+    border-radius: 20px 20px 0 0;
+    padding: 20px 16px 28px;
+  }
+  .sheet h2 { font-size: 17px; margin: 0 0 16px; }
+
+  .type-switch {
+    display: flex;
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 16px;
+  }
+  .type-opt {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 9px;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+  .type-opt.active { background: var(--accent); color: #fff; }
+
+  .cat-select { display: flex; gap: 8px; margin-bottom: 16px; }
+  .cat-opt {
+    flex: 1;
+    text-align: center;
+    padding: 12px 4px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+  .cat-opt.active[data-cat="music"] { border-color: var(--music); color: var(--music); background: rgba(124,108,246,.1); }
+  .cat-opt.active[data-cat="study"] { border-color: var(--study); color: var(--study); background: rgba(79,209,197,.1); }
+  .cat-opt.active[data-cat="personal"] { border-color: var(--personal); color: var(--personal); background: rgba(246,160,90,.1); }
+
+  .amount-input {
+    width: 100%;
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text);
+    text-align: center;
+    margin-bottom: 16px;
+    outline: none;
+  }
+  .amount-input:focus { border-color: var(--accent); }
+
+  .save-btn {
+    width: 100%;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .save-btn:disabled { opacity: 0.4; }
+</style>
+</head>
+<body>
+
+<h1>Трекер</h1>
+
+<div class="tabs">
+  <div class="tab active" data-period="day">Сегодня</div>
+  <div class="tab" data-period="week">Неделя</div>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="label">Часы</div>
+    <div class="value hours" id="totalHours">0ч</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Расходы</div>
+    <div class="value money" id="totalMoney">0 ₽</div>
+  </div>
+</div>
+
+<div class="cat-bars" id="catBars"></div>
+
+<div class="section-title">Записи</div>
+<div id="entriesList"></div>
+
+<button class="fab" id="addBtn">+ Добавить запись</button>
+
+<div class="sheet-overlay" id="sheetOverlay">
+  <div class="sheet">
+    <h2>Новая запись</h2>
+
+    <div class="type-switch">
+      <div class="type-opt active" data-type="hours">Часы</div>
+      <div class="type-opt" data-type="money">Расходы</div>
+    </div>
+
+    <div class="cat-select">
+      <div class="cat-opt active" data-cat="music">🎵 Музыка</div>
+      <div class="cat-opt" data-cat="study">📚 Учёба</div>
+      <div class="cat-opt" data-cat="personal">🌤 Личное</div>
+    </div>
+
+    <input class="amount-input" id="amountInput" type="number" inputmode="decimal" placeholder="0" />
+
+    <button class="save-btn" id="saveBtn">Сохранить</button>
+  </div>
+</div>
+
+<script>
+  const tg = window.Telegram?.WebApp;
+  if (tg) {
+    tg.ready();
+    tg.expand();
+  }
+
+  const STORAGE_KEY = 'bitmaker_tracker_entries';
+  const CATEGORIES = {
+    music:    { label: 'Музыка',  icon: '🎵', color: 'var(--music)' },
+    study:    { label: 'Учёба',   icon: '📚', color: 'var(--study)' },
+    personal: { label: 'Личное',  icon: '🌤', color: 'var(--personal)' }
+  };
+
+  let entries = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  let period = 'day';
+  let draft = { type: 'hours', cat: 'music' };
+
+  function save() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  }
+
+  function startOfDay(d) {
+    const x = new Date(d); x.setHours(0,0,0,0); return x;
+  }
+  function startOfWeek(d) {
+    const x = startOfDay(d);
+    const day = (x.getDay() + 6) % 7; // понедельник = 0
+    x.setDate(x.getDate() - day);
+    return x;
+  }
+
+  function filteredEntries() {
+    const now = new Date();
+    const from = period === 'day' ? startOfDay(now) : startOfWeek(now);
+    return entries.filter(e => new Date(e.ts) >= from);
+  }
+
+  function render() {
+    const list = filteredEntries();
+
+    // totals
+    const hours = list.filter(e => e.type === 'hours').reduce((s,e) => s + e.value, 0);
+    const money = list.filter(e => e.type === 'money').reduce((s,e) => s + e.value, 0);
+    document.getElementById('totalHours').textContent = hours.toFixed(1).replace('.0','') + 'ч';
+    document.getElementById('totalMoney').textContent = money.toLocaleString('ru-RU') + ' ₽';
+
+    // per category (hours + money combined visually, separate bars)
+    const catBars = document.getElementById('catBars');
+    catBars.innerHTML = '';
+    Object.keys(CATEGORIES).forEach(cat => {
+      const catHours = list.filter(e => e.cat === cat && e.type === 'hours').reduce((s,e)=>s+e.value,0);
+      const catMoney = list.filter(e => e.cat === cat && e.type === 'money').reduce((s,e)=>s+e.value,0);
+      if (catHours === 0 && catMoney === 0) return;
+      const maxRef = Math.max(hours, 1);
+      const pct = Math.min(100, (catHours / maxRef) * 100);
+      const row = document.createElement('div');
+      row.className = 'cat-row';
+      row.innerHTML = `
+        <div class="cat-dot" style="background:${CATEGORIES[cat].color}"></div>
+        <div class="cat-name">${CATEGORIES[cat].label}</div>
+        <div class="cat-track"><div class="cat-fill" style="width:${pct}%;background:${CATEGORIES[cat].color}"></div></div>
+        <div class="cat-val">${catHours ? catHours.toFixed(1).replace('.0','')+'ч' : ''} ${catMoney ? catMoney.toLocaleString('ru-RU')+'₽' : ''}</div>
+      `;
+      catBars.appendChild(row);
+    });
+
+    // entries list
+    const listEl = document.getElementById('entriesList');
+    if (list.length === 0) {
+      listEl.innerHTML = '<div class="empty">Пока нет записей</div>';
+    } else {
+      listEl.innerHTML = [...list].reverse().map(e => {
+        const c = CATEGORIES[e.cat];
+        const time = new Date(e.ts).toLocaleString('ru-RU', { day: period === 'week' ? '2-digit' : undefined, month: period === 'week' ? '2-digit' : undefined, hour: '2-digit', minute: '2-digit' });
+        const valStr = e.type === 'hours' ? `${e.value}ч` : `${e.value.toLocaleString('ru-RU')} ₽`;
+        return `
+          <div class="entry" data-id="${e.id}">
+            <div class="entry-icon" style="background:${c.color}22;color:${c.color}">${c.icon}</div>
+            <div class="entry-info">
+              <div class="entry-cat">${c.label}</div>
+              <div class="entry-time">${time}</div>
+            </div>
+            <div class="entry-val" style="color:${e.type === 'money' ? 'var(--personal)' : 'var(--text)'}">${valStr}</div>
+            <div class="entry-del" data-del="${e.id}">✕</div>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  // tabs
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      period = tab.dataset.period;
+      render();
+    });
+  });
+
+  // sheet open/close
+  const overlay = document.getElementById('sheetOverlay');
+  document.getElementById('addBtn').addEventListener('click', () => {
+    overlay.classList.add('open');
+    document.getElementById('amountInput').value = '';
+    document.getElementById('amountInput').focus();
+  });
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+
+  // type switch
+  document.querySelectorAll('.type-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('.type-opt').forEach(o => o.classList.remove('active'));
+      opt.classList.add('active');
+      draft.type = opt.dataset.type;
+      document.getElementById('amountInput').placeholder = draft.type === 'hours' ? 'Часы' : 'Сумма';
+    });
+  });
+
+  // category switch
+  document.querySelectorAll('.cat-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('.cat-opt').forEach(o => o.classList.remove('active'));
+      opt.classList.add('active');
+      draft.cat = opt.dataset.cat;
+    });
+  });
+
+  // save entry
+  document.getElementById('saveBtn').addEventListener('click', () => {
+    const val = parseFloat(document.getElementById('amountInput').value);
+    if (!val || val <= 0) {
+      tg?.HapticFeedback?.notificationOccurred('error');
+      return;
+    }
+    entries.push({
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+      type: draft.type,
+      cat: draft.cat,
+      value: val,
+      ts: new Date().toISOString()
+    });
+    save();
+    render();
+    overlay.classList.remove('open');
+    tg?.HapticFeedback?.notificationOccurred('success');
+  });
+
+  // delete entry
+  document.getElementById('entriesList').addEventListener('click', (e) => {
+    const id = e.target.dataset.del;
+    if (id) {
+      entries = entries.filter(en => en.id !== id);
+      save();
+      render();
+      tg?.HapticFeedback?.impactOccurred('light');
+    }
+  });
+
+  // Telegram theme sync (optional override of default dark palette)
+  if (tg?.themeParams?.bg_color) {
+    document.documentElement.style.setProperty('--bg', tg.themeParams.bg_color);
+  }
+
+  render();
+</script>
+</body>
+</html>
