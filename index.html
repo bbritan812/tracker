@@ -345,7 +345,7 @@
     <div class="ai-container">
         <div class="ai-header">💀 BLACKOUT AI MANAGER</div>
         <div class="ai-input-group">
-            <input type="text" id="aiInput" class="form-input" placeholder="Например: 2к на софт и 3ч на бит...">
+            <input type="text" id="aiInput" class="form-input" placeholder="Например: 3ч на бит и 2к на софт...">
             <button type="button" id="aiSendBtn" class="ai-send-btn">OK</button>
         </div>
         <div id="aiResponse" class="ai-response"></div>
@@ -453,7 +453,7 @@
             render();
         }
 
-        // Логика ИИ-помощника
+        // Инициализация ИИ-помощника
         document.addEventListener('DOMContentLoaded', () => {
             const aiSendBtn = document.getElementById('aiSendBtn');
             const aiInput = document.getElementById('aiInput');
@@ -466,20 +466,73 @@
             }
         });
 
+        // Умный локальный парсер для ИИ
         function handleAIPrompt() {
             const inputField = document.getElementById('aiInput');
             const responseBox = document.getElementById('aiResponse');
-            const text = inputField.value.trim();
+            const rawText = inputField.value.trim();
+            const text = rawText.toLowerCase();
 
             if (!text) return;
 
             responseBox.style.display = 'block';
             responseBox.textContent = '💀 ИИ анализирует запрос...';
 
+            let hours = 0;
+            let money = 0;
+            let category = 'Прочее';
+
+            // Ищем часы (например: 3ч, 2 часа, 1.5 часа)
+            const hourMatch = text.match(/(\d+[\.,]?\d*)\s*(ч|час|часов)/);
+            if (hourMatch) {
+                hours = parseFloat(hourMatch[1].replace(',', '.'));
+            }
+
+            // Ищем деньги (например: 2000, 2к, 500р, 1.5к)
+            const moneyMatch = text.match(/(\d+[\.,]?\d*)\s*(к|тыс|р|руб)/);
+            if (moneyMatch) {
+                let val = parseFloat(moneyMatch[1].replace(',', '.'));
+                if (moneyMatch[2].startsWith('к') || moneyMatch[2].startsWith('тыс')) {
+                    val *= 1000;
+                }
+                money = val;
+            }
+
+            // Определяем категорию по ключевым словам
+            if (text.includes('бит') || text.includes('свод') || text.includes('софт') || text.includes('фл') || text.includes('музык') || text.includes('трек')) {
+                category = 'Музыка';
+            } else if (text.includes('учеб') || text.includes('огэ') || text.includes('книг') || text.includes('курс')) {
+                category = 'Учеба';
+            } else if (text.includes('еда') || text.includes('шаурм') || text.includes('кофе') || text.includes('купил') || text.includes('трат') || text.includes('магазин') || text.includes('кафе')) {
+                category = 'Траты';
+            }
+
             setTimeout(() => {
-                responseBox.textContent = '💀 Запрос принят. Скоро подключим парсер в код!';
+                const newRecord = {
+                    id: Date.now(),
+                    title: rawText,
+                    category,
+                    hours,
+                    money,
+                    date: new Date().toISOString()
+                };
+
+                records.unshift(newRecord);
+                localStorage.setItem('tracker_records', JSON.stringify(records));
+                render();
+
+                let reply = `💀 Записано в категорию «${category}».`;
+                if (hours > 0 && money > 0) {
+                    reply = `💀 Учтено: ${hours}ч и ${money.toLocaleString('ru-RU')} ₽ («${category}»). Плотный темп.`;
+                } else if (hours > 0) {
+                    reply = `💀 Зафиксировано: ${hours}ч в категории «${category}». База.`;
+                } else if (money > 0) {
+                    reply = `💀 Траты зафиксированы: ${money.toLocaleString('ru-RU')} ₽ («${category}»).`;
+                }
+
+                responseBox.textContent = reply;
                 inputField.value = '';
-            }, 600);
+            }, 400);
         }
 
         function render() {
