@@ -2,232 +2,271 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Blackout Tracker</title>
+    <!-- Telegram WebApp -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background: #0a0a0a; color: #fff; padding: 15px; max-width: 480px; margin: auto; display: flex; flex-direction: column; height: 100vh; }
-        
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #1f1f1f; }
-        h1 { font-size: 16px; font-weight: 800; letter-spacing: 0.5px; color: #fff; }
-        .streak-badge { background: #1a1a1a; border: 1px solid #333; padding: 4px 10px; border-radius: 20px; font-size: 12px; color: #a855f7; font-weight: bold; }
-
-        /* Вкладки */
-        .tabs { display: flex; background: #121212; border: 1px solid #222; border-radius: 12px; padding: 4px; margin-bottom: 15px; }
-        .tab-btn { flex: 1; background: none; border: none; color: #777; padding: 10px; font-size: 13px; font-weight: bold; cursor: pointer; border-radius: 8px; transition: 0.2s; }
-        .tab-btn.active { background: #222; color: #fff; }
-
-        .tab-content { display: none; flex: 1; flex-direction: column; overflow-y: auto; }
+        body { background-color: #0a0a0a; color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; user-select: none; }
+        .tab-content { display: none; }
         .tab-content.active { display: flex; }
-
-        .card { background: #121212; border: 1px solid #1f1f1f; border-radius: 14px; padding: 15px; margin-bottom: 12px; }
-        
-        /* Таймер */
-        .timer-display { font-size: 48px; font-weight: 900; text-align: center; margin: 20px 0; color: #fff; font-variant-numeric: tabular-nums; }
-        .timer-controls { display: flex; gap: 10px; }
-        .btn { flex: 1; background: #222; color: #fff; border: 1px solid #333; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 14px; text-align: center; }
-        .btn-primary { background: #a855f7; border-color: #a855f7; color: #000; }
-        .btn-danger { background: #ef4444; border-color: #ef4444; }
-        
-        select { width: 100%; background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 10px; font-size: 14px; margin-bottom: 10px; outline: none; }
-
-        /* Чат */
-        .chat-box { flex: 1; background: #121212; border: 1px solid #1f1f1f; border-radius: 14px; padding: 15px; overflow-y: auto; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; height: 350px; }
-        .msg { padding: 10px 14px; border-radius: 10px; font-size: 14px; max-width: 85%; line-height: 1.4; }
-        .msg.user { background: #222; align-self: flex-end; color: #fff; }
-        .msg.ai { background: #1a1625; border: 1px solid #2d2242; align-self: flex-start; color: #e9d5ff; }
-        
-        .input-area { display: flex; gap: 8px; }
-        input[type="text"], input[type="number"] { flex: 1; background: #121212; border: 1px solid #222; color: #fff; padding: 12px; border-radius: 10px; font-size: 14px; outline: none; }
-        .send-btn { background: #fff; color: #000; border: none; width: 45px; border-radius: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-        /* Статы */
-        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .stat-box { background: #181818; padding: 12px; border-radius: 10px; border: 1px solid #262626; }
-        .stat-box span { display: block; font-size: 20px; font-weight: bold; color: #fff; margin-top: 4px; }
-        .stat-box label { font-size: 12px; color: #777; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #121212; }
+        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
     </style>
 </head>
-<body>
+<body class="flex flex-col h-screen max-w-md mx-auto p-3 justify-between">
 
-    <header>
-        <h1>BLACKOUT SYSTEM</h1>
-        <div class="streak-badge" id="streakBadge">🔥 СЕРИЯ: 4 ДНЯ</div>
+    <!-- ШАПКА -->
+    <header class="flex justify-between items-center pb-3 border-b border-zinc-800">
+        <div>
+            <h1 class="text-xs font-black tracking-widest text-white">BLACKOUT SYSTEM</h1>
+            <p class="text-[10px] text-zinc-500" id="currentDate">Загрузка...</p>
+        </div>
+        <div class="bg-zinc-900 border border-zinc-800 px-3 py-1 rounded-full text-xs font-bold text-purple-400">
+            🔥 4 ДНЯ
+        </div>
     </header>
 
-    <!-- Навигация -->
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('timer')">Таймер</button>
-        <button class="tab-btn" onclick="switchTab('chat')">Менеджер</button>
-        <button class="tab-btn" onclick="switchTab('stats')">Трекер</button>
-    </div>
+    <!-- КОНТЕНТ -->
+    <main class="flex-1 flex flex-col overflow-hidden py-3 relative">
 
-    <!-- Вкладка 1: Таймер Фокуса -->
-    <div id="tab-timer" class="tab-content active">
-        <div class="card">
-            <label style="font-size: 13px; color: #777; margin-bottom: 6px; display: block;">Категория фокуса:</label>
-            <select id="timerCategory">
-                <option value="studyHours">Работа / Учёба</option>
-                <option value="sportHours">Спорт / Зал</option>
-                <option value="otherHours">Творчество / Прочее</option>
-            </select>
-
-            <div class="timer-display" id="timerDisplay">00:00</div>
-
-            <div class="timer-controls">
-                <button class="btn btn-primary" id="startTimerBtn" onclick="toggleTimer()">Старт</button>
-                <button class="btn btn-danger" onclick="resetTimer()">Сброс</button>
+        <!-- 1. ДАШБОРД -->
+        <div id="tab-dashboard" class="tab-content active flex-col gap-3 overflow-y-auto">
+            <div class="bg-zinc-900/80 border border-zinc-800 p-4 rounded-2xl shadow-lg">
+                <h2 class="text-sm font-bold text-white mb-1">Здарова, бро ⚡️</h2>
+                <p class="text-xs text-zinc-400 mb-3">Система в норме. Контролируй процесс.</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="bg-zinc-950 p-3 rounded-xl border border-zinc-800/50">
+                        <span class="text-[10px] text-zinc-500 uppercase font-semibold">Сделано задач</span>
+                        <span class="text-lg font-black text-purple-400 mt-0.5 block" id="dashTasks">0 / 0</span>
+                    </div>
+                    <div class="bg-zinc-950 p-3 rounded-xl border border-zinc-800/50">
+                        <span class="text-[10px] text-zinc-500 uppercase font-semibold">Фокус</span>
+                        <span class="text-lg font-black text-white mt-0.5 block" id="dashTimer">25:00</span>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div style="text-align: center; font-size: 12px; color: #555;">Таймер автоматически добавляет отработанное время в твою статистику.</div>
-    </div>
 
-    <!-- Вкладка 2: Чат с менеджером -->
-    <div id="tab-chat" class="tab-content">
-        <div class="chat-box" id="chatBox">
-            <div class="msg ai">Здарова. Я твой менеджер. Че по задачам на сегодня? Выкладывай прогресс.</div>
-        </div>
-        <div class="input-area">
-            <input type="text" id="messageInput" placeholder="Написать менеджеру..." onkeydown="if(event.key==='Enter') sendMessage()">
-            <button class="send-btn" onclick="sendMessage()">➤</button>
-        </div>
-    </div>
-
-    <!-- Вкладка 3: Трекер и Расходы -->
-    <div id="tab-stats" class="tab-content">
-        <div class="card">
-            <h3 style="font-size: 14px; margin-bottom: 12px;">📊 ПРОГРЕСС ЗА СЕГОДНЯ</h3>
-            <div class="stats-grid">
-                <div class="stat-box"><label>Работа/Учёба</label><span id="statStudy">0</span>ч</div>
-                <div class="stat-box"><label>Спорт</label><span id="statSport">0</span>ч</div>
-                <div class="stat-box"><label>Прочее</label><span id="statOther">0</span>ч</div>
-                <div class="stat-box"><label>Расходы</label><span id="statMoney">0</span>₽</div>
+            <div class="bg-zinc-900/80 border border-zinc-800 p-4 rounded-2xl flex flex-col gap-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-zinc-400">⚡️ Быстрые действия</span>
+                <div class="flex gap-2">
+                    <button onclick="switchTab('timer')" class="flex-1 bg-purple-600 hover:bg-purple-500 text-black font-bold py-2.5 rounded-xl text-xs transition">Таймер</button>
+                    <button onclick="switchTab('tasks')" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-2.5 rounded-xl text-xs transition">Задачи</button>
+                </div>
             </div>
         </div>
 
-        <div class="card">
-            <h3 style="font-size: 14px; margin-bottom: 10px;">💸 ЗАПИСАТЬ РАСХОД</h3>
-            <div style="display: flex; gap: 8px;">
-                <input type="number" id="expenseInput" placeholder="Сумма в рублях...">
-                <button class="btn" style="flex: 0 0 100px;" onclick="addExpense()">Записать</button>
+        <!-- 2. ЗАДАЧИ -->
+        <div id="tab-tasks" class="tab-content flex-col gap-3 flex-1 overflow-hidden">
+            <div class="bg-zinc-900/80 border border-zinc-800 p-3 rounded-2xl flex flex-col gap-2">
+                <input type="text" id="taskInput" placeholder="Новая задача..." class="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-purple-500">
+                <div class="flex gap-2">
+                    <select id="taskCategory" class="flex-1 bg-zinc-950 border border-zinc-800 text-xs text-zinc-300 p-2 rounded-xl outline-none">
+                        <option value="Работа">💼 Работа</option>
+                        <option value="Учёба">📚 Учёба</option>
+                        <option value="Музыка">🎧 Музыка</option>
+                        <option value="Спорт">⚡️ Спорт</option>
+                        <option value="Личное">👤 Личное</option>
+                    </select>
+                    <button onclick="addTask()" class="bg-purple-600 hover:bg-purple-500 text-black font-bold px-4 py-2 rounded-xl text-xs transition">Добавить</button>
+                </div>
+            </div>
+            <div id="taskList" class="flex-1 overflow-y-auto flex flex-col gap-2"></div>
+        </div>
+
+        <!-- 3. ТАЙМЕР -->
+        <div id="tab-timer" class="tab-content flex-col items-center justify-center flex-1 bg-zinc-900/80 border border-zinc-800 p-6 rounded-2xl gap-6">
+            <div class="text-6xl font-black tracking-wider text-white font-mono" id="timerDisplay">25:00</div>
+            <div class="flex gap-2 w-full">
+                <button id="timerToggleBtn" onclick="toggleTimer()" class="flex-1 bg-purple-600 text-black font-bold py-3 rounded-xl text-sm transition">Старт</button>
+                <button onclick="resetTimer()" class="bg-zinc-800 text-zinc-300 font-bold px-4 py-3 rounded-xl text-sm transition">Сброс</button>
             </div>
         </div>
-    </div>
+
+        <!-- 4. ИИ МЕНЕДЖЕР -->
+        <div id="tab-ai" class="tab-content flex-col flex-1 overflow-hidden gap-2">
+            <div id="chatBox" class="flex-1 bg-zinc-900/80 border border-zinc-800 p-3 rounded-2xl overflow-y-auto flex flex-col gap-2 text-xs">
+                <div class="bg-purple-950/60 border border-purple-800/50 text-purple-200 p-3 rounded-xl self-start max-w-[85%]">
+                    Здарова. Менеджер на связи. Че по планам на сегодня? Выкладывай.
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <input type="text" id="chatInput" placeholder="Написать менеджеру..." onkeydown="if(event.key==='Enter') sendAiMessage()" class="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-purple-500">
+                <button onclick="sendAiMessage()" class="bg-purple-600 text-black font-bold px-4 py-2 rounded-xl text-xs">➤</button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- НАВИГАЦИЯ -->
+    <nav class="flex bg-zinc-900 border border-zinc-800 rounded-2xl p-1.5 justify-between">
+        <button onclick="switchTab('dashboard')" class="nav-btn flex-1 py-2 text-[11px] font-bold text-center rounded-xl text-purple-400 bg-zinc-800 transition" data-tab="dashboard">Главная</button>
+        <button onclick="switchTab('tasks')" class="nav-btn flex-1 py-2 text-[11px] font-bold text-center rounded-xl text-zinc-500 transition" data-tab="tasks">Задачи</button>
+        <button onclick="switchTab('timer')" class="nav-btn flex-1 py-2 text-[11px] font-bold text-center rounded-xl text-zinc-500 transition" data-tab="timer">Таймер</button>
+        <button onclick="switchTab('ai')" class="nav-btn flex-1 py-2 text-[11px] font-bold text-center rounded-xl text-zinc-500 transition" data-tab="ai">Менеджер</button>
+    </nav>
 
     <script>
+        // Инициализация Telegram WebApp
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.expand();
+            tg.ready();
+            if (tg.setHeaderColor) tg.setHeaderColor('#0a0a0a');
+        }
+
         const WORKER_URL = "https://dark-credit-4079.floda486.workers.dev/";
 
-        let trackerData = {
-            today: { studyHours: 2, sportHours: 0, otherHours: 1, money: 350 },
-            goals: { study: 3, sport: 1 },
-            streak: 4
-        };
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', weekday: 'short' });
 
-        function updateUI() {
-            document.getElementById('statStudy').textContent = trackerData.today.studyHours;
-            document.getElementById('statSport').textContent = trackerData.today.sportHours;
-            document.getElementById('statOther').textContent = trackerData.today.otherHours;
-            document.getElementById('statMoney').textContent = trackerData.today.money;
-            document.getElementById('streakBadge').textContent = `🔥 СЕРИЯ: ${trackerData.streak} ДНЯ`;
-        }
-        updateUI();
-
-        // Переключение вкладок
+        // Вкладки
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-purple-400', 'bg-zinc-800');
+                btn.classList.add('text-zinc-500');
+                if (btn.dataset.tab === tabName) {
+                    btn.classList.add('text-purple-400', 'bg-zinc-800');
+                    btn.classList.remove('text-zinc-500');
+                }
+            });
             document.getElementById('tab-' + tabName).classList.add('active');
-            event.target.classList.add('active');
         }
 
-        // Логика таймера
+        // Задачи
+        let tasks = JSON.parse(localStorage.getItem('blackout_tasks')) || [
+            { id: 1, text: 'Написать новый бит в FL Studio', completed: false, category: 'Музыка' },
+            { id: 2, text: 'Сделать тренировку', completed: true, category: 'Спорт' }
+        ];
+
+        function saveTasks() {
+            localStorage.setItem('blackout_tasks', JSON.stringify(tasks));
+            renderTasks();
+        }
+
+        function renderTasks() {
+            const list = document.getElementById('taskList');
+            const completedCount = tasks.filter(t => t.completed).length;
+            document.getElementById('dashTasks').textContent = `${completedCount} / ${tasks.length}`;
+
+            if (tasks.length === 0) {
+                list.innerHTML = '<div class="text-center text-zinc-600 text-xs py-8">Список задач пуст</div>';
+                return;
+            }
+
+            list.innerHTML = tasks.map(t => `
+                <div class="bg-zinc-900/60 border border-zinc-800/60 p-3 rounded-xl flex items-center justify-between text-xs">
+                    <div class="flex items-center gap-2.5">
+                        <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleTask(${t.id})" class="accent-purple-600 w-4 h-4 rounded cursor-pointer">
+                        <div>
+                            <span class="${t.completed ? 'line-through text-zinc-600 block' : 'text-white block font-medium'}">${t.text}</span>
+                            <span class="text-[10px] text-purple-400 font-semibold">${t.category || 'Общее'}</span>
+                        </div>
+                    </div>
+                    <button onclick="deleteTask(${t.id})" class="text-zinc-600 hover:text-red-400 font-bold px-2 py-1 transition">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            const cat = document.getElementById('taskCategory').value;
+            const text = input.value.trim();
+            if (!text) return;
+            tasks.push({ id: Date.now(), text, completed: false, category: cat });
+            input.value = '';
+            saveTasks();
+        }
+
+        function toggleTask(id) {
+            tasks = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+            saveTasks();
+        }
+
+        function deleteTask(id) {
+            tasks = tasks.filter(t => t.id !== id);
+            saveTasks();
+        }
+        renderTasks();
+
+        // Таймер
+        let timerSeconds = 25 * 60;
         let timerInterval = null;
-        let secondsLeft = 0; // Начинаем с нуля (секундомер) или можно сделать обратный отсчет
-        let totalSecondsWorked = 0;
-        let isRunning = false;
+        let isTimerRunning = false;
+
+        function updateTimerDisplay() {
+            let m = Math.floor(timerSeconds / 60);
+            let s = timerSeconds % 60;
+            const formatted = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+            document.getElementById('timerDisplay').textContent = formatted;
+            document.getElementById('dashTimer').textContent = formatted;
+        }
 
         function toggleTimer() {
-            const btn = document.getElementById('startTimerBtn');
-            if (!isRunning) {
-                isRunning = true;
+            const btn = document.getElementById('timerToggleBtn');
+            if (!isTimerRunning) {
+                isTimerRunning = true;
                 btn.textContent = "Пауза";
-                btn.classList.add('btn-danger');
+                btn.classList.replace('bg-purple-600', 'bg-red-600');
                 
                 timerInterval = setInterval(() => {
-                    totalSecondsWorked++;
-                    let mins = Math.floor(totalSecondsWorked / 60);
-                    let secs = totalSecondsWorked % 60;
-                    document.getElementById('timerDisplay').textContent = 
-                        String(mins).padStart(2, '0') + ":" + String(secs).padStart(2, '0');
+                    if (timerSeconds > 0) {
+                        timerSeconds--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(timerInterval);
+                        isTimerRunning = false;
+                        alert('Время вышло! Отличная работа.');
+                        resetTimer();
+                    }
                 }, 1000);
             } else {
-                isRunning = false;
-                btn.textContent = "Продолжить";
-                btn.classList.remove('btn-danger');
+                isTimerRunning = false;
+                btn.textContent = "Старт";
+                btn.classList.replace('bg-red-600', 'bg-purple-600');
                 clearInterval(timerInterval);
-
-                // Каждые завершенные 60 минут (или для теста можно меньше) записываем в часы
-                let hoursWorked = parseFloat((totalSecondsWorked / 3600).toFixed(1));
-                if (hoursWorked > 0) {
-                    const category = document.getElementById('timerCategory').value;
-                    trackerData.today[category] = parseFloat((trackerData.today[category] + hoursWorked).toFixed(1));
-                    totalSecondsWorked = 0; // сбрасываем счетчик текущей сессии
-                    updateUI();
-                }
             }
         }
 
         function resetTimer() {
-            isRunning = false;
             clearInterval(timerInterval);
-            totalSecondsWorked = 0;
-            document.getElementById('timerDisplay').textContent = "00:00";
-            const btn = document.getElementById('startTimerBtn');
+            isTimerRunning = false;
+            timerSeconds = 25 * 60;
+            updateTimerDisplay();
+            const btn = document.getElementById('timerToggleBtn');
             btn.textContent = "Старт";
-            btn.classList.remove('btn-danger');
+            btn.classList.replace('bg-red-600', 'bg-purple-600');
         }
-
-        // Расходы
-        function addExpense() {
-            const input = document.getElementById('expenseInput');
-            const val = parseInt(input.value);
-            if (isNaN(val) || val <= 0) return;
-
-            trackerData.today.money += val;
-            input.value = '';
-            updateUI();
-        }
+        updateTimerDisplay();
 
         // Чат с ИИ
-        async function sendMessage() {
-            const input = document.getElementById('messageInput');
+        async function sendAiMessage() {
+            const input = document.getElementById('chatInput');
             const chatBox = document.getElementById('chatBox');
             const text = input.value.trim();
             if (!text) return;
 
-            chatBox.innerHTML += `<div class="msg user">${text}</div>`;
+            chatBox.innerHTML += `<div class="bg-zinc-800 text-white p-3 rounded-xl self-end max-w-[85%]">${text}</div>`;
             input.value = '';
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                const response = await fetch(WORKER_URL, {
+                const res = await fetch(WORKER_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ 
-                        message: text,
-                        tracker: trackerData 
-                    })
+                    body: JSON.stringify({ message: text, tracker: { tasks, streak: 4 } })
                 });
-
-                const data = await response.json();
+                const data = await res.json();
                 if (data.reply) {
-                    chatBox.innerHTML += `<div class="msg ai">${data.reply}</div>`;
+                    chatBox.innerHTML += `<div class="bg-purple-950/60 border border-purple-800/50 text-purple-200 p-3 rounded-xl self-start max-w-[85%]">${data.reply}</div>`;
                 } else {
-                    chatBox.innerHTML += `<div class="msg ai" style="color:#ef4444;">Ошибка: ${data.error}</div>`;
+                    chatBox.innerHTML += `<div class="bg-red-950/50 text-red-400 p-3 rounded-xl self-start">Ошибка ответа ИИ</div>`;
                 }
             } catch (err) {
-                chatBox.innerHTML += `<div class="msg ai" style="color:#ef4444;">Ошибка соединения с сервером.</div>`;
+                chatBox.innerHTML += `<div class="bg-red-950/50 text-red-400 p-3 rounded-xl self-start">Ошибка связи с воркером</div>`;
             }
             chatBox.scrollTop = chatBox.scrollHeight;
         }
