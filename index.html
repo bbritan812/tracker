@@ -33,6 +33,12 @@ export default {
                 isTelegramWebhook = true;
                 chatId = body.message.chat.id;
                 message = body.message.text ? body.message.text.trim() : "";
+
+                // Жесткий перехват команды /start, чтобы бот не уходил в нейросеть
+                if (message === "/start") {
+                    await sendTelegramMessage(env.TELEGRAM_BOT_TOKEN, chatId, "Здарова, бро! Блэкаут-трекер на связи. Хуяришь музу или задачи — пиши сюда, всё запишем.");
+                    return new Response("OK", { status: 200 });
+                }
             } else {
                 message = typeof body.message === "string" ? body.message.trim() : "";
                 tracker = body.tracker || {};
