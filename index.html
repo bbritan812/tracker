@@ -1,453 +1,456 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Tracker</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<style>
-  :root {
-    --bg: #0f0f12;
-    --bg-elevated: #17171c;
-    --bg-card: #1c1c22;
-    --border: #2a2a32;
-    --text: #f2f2f2;
-    --text-secondary: #8b8b93;
-    --accent: #7c6cf6;
-    --accent-soft: rgba(124, 108, 246, 0.15);
-    --music: #7c6cf6;
-    --study: #4fd1c5;
-    --personal: #f6a05a;
-    --danger: #f65c6c;
-    --radius: 16px;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Трекер</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-color: #0f0f11;
+            --card-bg: #18181b;
+            --accent-color: #7c3aed;
+            --accent-hover: #6d28d9;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --border-color: #27272a;
+        }
 
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
 
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
-    padding: 16px 16px 100px;
-    min-height: 100vh;
-  }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
 
-  h1 { font-size: 20px; font-weight: 700; margin: 4px 0 20px; letter-spacing: -0.3px; }
+        h1 {
+            font-size: 20px;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
 
-  .tabs {
-    display: flex;
-    background: var(--bg-elevated);
-    border-radius: 12px;
-    padding: 4px;
-    margin-bottom: 20px;
-  }
-  .tab {
-    flex: 1;
-    text-align: center;
-    padding: 9px 0;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    border-radius: 9px;
-    cursor: pointer;
-    transition: all .15s ease;
-    user-select: none;
-  }
-  .tab.active { background: var(--accent); color: #fff; }
+        .tabs {
+            display: flex;
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border-color);
+        }
 
-  .stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  .stat-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 14px;
-  }
-  .stat-card .label { font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; }
-  .stat-card .value { font-size: 20px; font-weight: 700; }
-  .stat-card .value.hours { color: var(--music); }
-  .stat-card .value.money { color: var(--personal); }
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
 
-  .cat-bars { margin-bottom: 24px; }
-  .cat-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  .cat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .cat-name { font-size: 13px; width: 64px; flex-shrink: 0; color: var(--text-secondary); }
-  .cat-track {
-    flex: 1;
-    height: 6px;
-    background: var(--bg-elevated);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  .cat-fill { height: 100%; border-radius: 4px; transition: width .3s ease; }
-  .cat-val { font-size: 12px; color: var(--text-secondary); width: 56px; text-align: right; flex-shrink: 0; }
+        .tab.active {
+            background: var(--accent-color);
+            color: var(--text-main);
+        }
 
-  .section-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin: 20px 0 10px;
-  }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
 
-  .entry {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 12px 14px;
-    margin-bottom: 8px;
-  }
-  .entry-icon {
-    width: 36px; height: 36px;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px;
-    flex-shrink: 0;
-  }
-  .entry-info { flex: 1; min-width: 0; }
-  .entry-cat { font-size: 14px; font-weight: 600; }
-  .entry-time { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
-  .entry-val { font-size: 15px; font-weight: 700; flex-shrink: 0; }
-  .entry-del {
-    color: var(--text-secondary);
-    font-size: 18px;
-    padding: 4px 6px;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px;
+        }
 
-  .empty {
-    text-align: center;
-    color: var(--text-secondary);
-    font-size: 13px;
-    padding: 30px 0;
-  }
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
 
-  .fab {
-    position: fixed;
-    bottom: 24px;
-    left: 16px;
-    right: 16px;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 16px;
-    padding: 15px;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-  }
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
 
-  .sheet-overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.5);
-    display: none;
-    align-items: flex-end;
-    z-index: 50;
-  }
-  .sheet-overlay.open { display: flex; }
-  .sheet {
-    background: var(--bg-elevated);
-    width: 100%;
-    border-radius: 20px 20px 0 0;
-    padding: 20px 16px 28px;
-  }
-  .sheet h2 { font-size: 17px; margin: 0 0 16px; }
+        .section-title {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-gap: 0.5px;
+            letter-spacing: 0.5px;
+        }
 
-  .type-switch {
-    display: flex;
-    background: var(--bg-card);
-    border-radius: 12px;
-    padding: 4px;
-    margin-bottom: 16px;
-  }
-  .type-opt {
-    flex: 1;
-    text-align: center;
-    padding: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: 9px;
-    color: var(--text-secondary);
-    cursor: pointer;
-  }
-  .type-opt.active { background: var(--accent); color: #fff; }
+        .records-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 80px;
+        }
 
-  .cat-select { display: flex; gap: 8px; margin-bottom: 16px; }
-  .cat-opt {
-    flex: 1;
-    text-align: center;
-    padding: 12px 4px;
-    border-radius: 12px;
-    border: 1.5px solid var(--border);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    cursor: pointer;
-  }
-  .cat-opt.active[data-cat="music"] { border-color: var(--music); color: var(--music); background: rgba(124,108,246,.1); }
-  .cat-opt.active[data-cat="study"] { border-color: var(--study); color: var(--study); background: rgba(79,209,197,.1); }
-  .cat-opt.active[data-cat="personal"] { border-color: var(--personal); color: var(--personal); background: rgba(246,160,90,.1); }
+        .record-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-  .amount-input {
-    width: 100%;
-    background: var(--bg-card);
-    border: 1.5px solid var(--border);
-    border-radius: 14px;
-    padding: 16px;
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--text);
-    text-align: center;
-    margin-bottom: 16px;
-    outline: none;
-  }
-  .amount-input:focus { border-color: var(--accent); }
+        .record-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
 
-  .save-btn {
-    width: 100%;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 14px;
-    padding: 15px;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-  .save-btn:disabled { opacity: 0.4; }
-</style>
+        .record-title {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .record-category {
+            font-size: 11px;
+            color: var(--accent-color);
+            background: rgba(124, 58, 237, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            width: fit-content;
+        }
+
+        .record-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .record-metric {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+
+        .delete-btn:hover {
+            color: #ef4444;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 40px;
+        }
+
+        .add-btn {
+            position: fixed;
+            bottom: 16px;
+            left: 16px;
+            right: 16px;
+            max-width: 568px;
+            margin: 0 auto;
+            background: var(--accent-color);
+            color: var(--text-main);
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+        }
+
+        .add-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 100;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 600px;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: var(--accent-color);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            flex: 1;
+            background: var(--accent-color);
+            border: none;
+            color: var(--text-main);
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 
-<h1>Трекер</h1>
+    <h1>Трекер</h1>
 
-<div class="tabs">
-  <div class="tab active" data-period="day">Сегодня</div>
-  <div class="tab" data-period="week">Неделя</div>
-</div>
-
-<div class="stats-grid">
-  <div class="stat-card">
-    <div class="label">Часы</div>
-    <div class="value hours" id="totalHours">0ч</div>
-  </div>
-  <div class="stat-card">
-    <div class="label">Расходы</div>
-    <div class="value money" id="totalMoney">0 ₽</div>
-  </div>
-</div>
-
-<div class="cat-bars" id="catBars"></div>
-
-<div class="section-title">Записи</div>
-<div id="entriesList"></div>
-
-<button class="fab" id="addBtn">+ Добавить запись</button>
-
-<div class="sheet-overlay" id="sheetOverlay">
-  <div class="sheet">
-    <h2>Новая запись</h2>
-
-    <div class="type-switch">
-      <div class="type-opt active" data-type="hours">Часы</div>
-      <div class="type-opt" data-type="money">Расходы</div>
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('today')">Сегодня</div>
+        <div class="tab" onclick="switchTab('week')">Неделя</div>
     </div>
 
-    <div class="cat-select">
-      <div class="cat-opt active" data-cat="music">🎵 Музыка</div>
-      <div class="cat-opt" data-cat="study">📚 Учёба</div>
-      <div class="cat-opt" data-cat="personal">🌤 Личное</div>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">Часы</div>
+            <div class="stat-value" id="totalHours">0ч</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Расходы</div>
+            <div class="stat-value" id="totalMoney">0 ₽</div>
+        </div>
     </div>
 
-    <input class="amount-input" id="amountInput" type="number" inputmode="decimal" placeholder="0" />
+    <div class="section-title">Записи</div>
+    <div class="records-list" id="recordsList">
+        <div class="empty-state">Пока нет записей</div>
+    </div>
 
-    <button class="save-btn" id="saveBtn">Сохранить</button>
-  </div>
-</div>
+    <button class="add-btn" onclick="openModal()">+ Добавить запись</button>
 
-<script>
-  const tg = window.Telegram?.WebApp;
-  if (tg) {
-    tg.ready();
-    tg.expand();
-  }
+    <!-- Модальное окно -->
+    <div class="modal" id="recordModal">
+        <div class="modal-content">
+            <div class="modal-title">Новая запись</div>
+            <form id="recordForm" onsubmit="saveRecord(event)">
+                <div class="form-group">
+                    <label class="form-label">Название / Описание</label>
+                    <input type="text" id="recTitle" class="form-input" placeholder="Например: Битмейкинг / Фастфуд" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Категория</label>
+                    <select id="recCategory" class="form-select">
+                        <option value="Музыка">Музыка</option>
+                        <option value="Учеба">Учеба</option>
+                        <option value="Траты">Траты</option>
+                        <option value="Прочее">Прочее</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Часы (если применимо)</label>
+                    <input type="number" step="0.5" id="recHours" class="form-input" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Сумма в рублях (если расход)</label>
+                    <input type="number" id="recMoney" class="form-input" placeholder="0">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal()">Отмена</button>
+                    <button type="submit" class="btn-submit">Добавить</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-  const STORAGE_KEY = 'bitmaker_tracker_entries';
-  const CATEGORIES = {
-    music:    { label: 'Музыка',  icon: '🎵', color: 'var(--music)' },
-    study:    { label: 'Учёба',   icon: '📚', color: 'var(--study)' },
-    personal: { label: 'Личное',  icon: '🌤', color: 'var(--personal)' }
-  };
+    <script>
+        let currentTab = 'today';
+        let records = JSON.parse(localStorage.getItem('tracker_records')) || [];
 
-  let entries = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-  let period = 'day';
-  let draft = { type: 'hours', cat: 'music' };
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+            event.target.classList.add('active');
+            render();
+        }
 
-  function save() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-  }
+        function openModal() {
+            document.getElementById('recordModal').classList.add('active');
+        }
 
-  function startOfDay(d) {
-    const x = new Date(d); x.setHours(0,0,0,0); return x;
-  }
-  function startOfWeek(d) {
-    const x = startOfDay(d);
-    const day = (x.getDay() + 6) % 7; // понедельник = 0
-    x.setDate(x.getDate() - day);
-    return x;
-  }
+        function closeModal() {
+            document.getElementById('recordModal').classList.remove('active');
+            document.getElementById('recordForm').reset();
+        }
 
-  function filteredEntries() {
-    const now = new Date();
-    const from = period === 'day' ? startOfDay(now) : startOfWeek(now);
-    return entries.filter(e => new Date(e.ts) >= from);
-  }
+        function saveRecord(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('recTitle').value;
+            const category = document.getElementById('recCategory').value;
+            const hours = parseFloat(document.getElementById('recHours').value) || 0;
+            const money = parseFloat(document.getElementById('recMoney').value) || 0;
 
-  function render() {
-    const list = filteredEntries();
+            const newRecord = {
+                id: Date.now(),
+                title,
+                category,
+                hours,
+                money,
+                date: new Date().toISOString()
+            };
 
-    // totals
-    const hours = list.filter(e => e.type === 'hours').reduce((s,e) => s + e.value, 0);
-    const money = list.filter(e => e.type === 'money').reduce((s,e) => s + e.value, 0);
-    document.getElementById('totalHours').textContent = hours.toFixed(1).replace('.0','') + 'ч';
-    document.getElementById('totalMoney').textContent = money.toLocaleString('ru-RU') + ' ₽';
+            records.unshift(newRecord);
+            localStorage.setItem('tracker_records', JSON.stringify(records));
 
-    // per category (hours + money combined visually, separate bars)
-    const catBars = document.getElementById('catBars');
-    catBars.innerHTML = '';
-    Object.keys(CATEGORIES).forEach(cat => {
-      const catHours = list.filter(e => e.cat === cat && e.type === 'hours').reduce((s,e)=>s+e.value,0);
-      const catMoney = list.filter(e => e.cat === cat && e.type === 'money').reduce((s,e)=>s+e.value,0);
-      if (catHours === 0 && catMoney === 0) return;
-      const maxRef = Math.max(hours, 1);
-      const pct = Math.min(100, (catHours / maxRef) * 100);
-      const row = document.createElement('div');
-      row.className = 'cat-row';
-      row.innerHTML = `
-        <div class="cat-dot" style="background:${CATEGORIES[cat].color}"></div>
-        <div class="cat-name">${CATEGORIES[cat].label}</div>
-        <div class="cat-track"><div class="cat-fill" style="width:${pct}%;background:${CATEGORIES[cat].color}"></div></div>
-        <div class="cat-val">${catHours ? catHours.toFixed(1).replace('.0','')+'ч' : ''} ${catMoney ? catMoney.toLocaleString('ru-RU')+'₽' : ''}</div>
-      `;
-      catBars.appendChild(row);
-    });
+            closeModal();
+            render();
+        }
 
-    // entries list
-    const listEl = document.getElementById('entriesList');
-    if (list.length === 0) {
-      listEl.innerHTML = '<div class="empty">Пока нет записей</div>';
-    } else {
-      listEl.innerHTML = [...list].reverse().map(e => {
-        const c = CATEGORIES[e.cat];
-        const time = new Date(e.ts).toLocaleString('ru-RU', { day: period === 'week' ? '2-digit' : undefined, month: period === 'week' ? '2-digit' : undefined, hour: '2-digit', minute: '2-digit' });
-        const valStr = e.type === 'hours' ? `${e.value}ч` : `${e.value.toLocaleString('ru-RU')} ₽`;
-        return `
-          <div class="entry" data-id="${e.id}">
-            <div class="entry-icon" style="background:${c.color}22;color:${c.color}">${c.icon}</div>
-            <div class="entry-info">
-              <div class="entry-cat">${c.label}</div>
-              <div class="entry-time">${time}</div>
-            </div>
-            <div class="entry-val" style="color:${e.type === 'money' ? 'var(--personal)' : 'var(--text)'}">${valStr}</div>
-            <div class="entry-del" data-del="${e.id}">✕</div>
-          </div>
-        `;
-      }).join('');
-    }
-  }
+        function deleteRecord(id) {
+            records = records.filter(item => item.id !== id);
+            localStorage.setItem('tracker_records', JSON.stringify(records));
+            render();
+        }
 
-  // tabs
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      period = tab.dataset.period;
-      render();
-    });
-  });
+        function render() {
+            const listEl = document.getElementById('recordsList');
+            const totalHoursEl = document.getElementById('totalHours');
+            const totalMoneyEl = document.getElementById('totalMoney');
 
-  // sheet open/close
-  const overlay = document.getElementById('sheetOverlay');
-  document.getElementById('addBtn').addEventListener('click', () => {
-    overlay.classList.add('open');
-    document.getElementById('amountInput').value = '';
-    document.getElementById('amountInput').focus();
-  });
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) overlay.classList.remove('open');
-  });
+            // Фильтрация по вкладкам (сегодня / последние 7 дней)
+            const now = new Date();
+            const filteredRecords = records.filter(item => {
+                const itemDate = new Date(item.date);
+                if (currentTab === 'today') {
+                    return itemDate.toDateString() === now.toDateString();
+                } else {
+                    const diffTime = Math.abs(now - itemDate);
+                    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+                    return diffDays <= 7;
+                }
+            });
 
-  // type switch
-  document.querySelectorAll('.type-opt').forEach(opt => {
-    opt.addEventListener('click', () => {
-      document.querySelectorAll('.type-opt').forEach(o => o.classList.remove('active'));
-      opt.classList.add('active');
-      draft.type = opt.dataset.type;
-      document.getElementById('amountInput').placeholder = draft.type === 'hours' ? 'Часы' : 'Сумма';
-    });
-  });
+            // Подсчет итогов
+            let totalH = 0;
+            let totalM = 0;
 
-  // category switch
-  document.querySelectorAll('.cat-opt').forEach(opt => {
-    opt.addEventListener('click', () => {
-      document.querySelectorAll('.cat-opt').forEach(o => o.classList.remove('active'));
-      opt.classList.add('active');
-      draft.cat = opt.dataset.cat;
-    });
-  });
+            filteredRecords.forEach(item => {
+                totalH += item.hours;
+                totalM += item.money;
+            });
 
-  // save entry
-  document.getElementById('saveBtn').addEventListener('click', () => {
-    const val = parseFloat(document.getElementById('amountInput').value);
-    if (!val || val <= 0) {
-      tg?.HapticFeedback?.notificationOccurred('error');
-      return;
-    }
-    entries.push({
-      id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
-      type: draft.type,
-      cat: draft.cat,
-      value: val,
-      ts: new Date().toISOString()
-    });
-    save();
-    render();
-    overlay.classList.remove('open');
-    tg?.HapticFeedback?.notificationOccurred('success');
-  });
+            totalHoursEl.textContent = totalH + 'ч';
+            totalMoneyEl.textContent = totalM.toLocaleString('ru-RU') + ' ₽';
 
-  // delete entry
-  document.getElementById('entriesList').addEventListener('click', (e) => {
-    const id = e.target.dataset.del;
-    if (id) {
-      entries = entries.filter(en => en.id !== id);
-      save();
-      render();
-      tg?.HapticFeedback?.impactOccurred('light');
-    }
-  });
+            // Отрисовка списка
+            if (filteredRecords.length === 0) {
+                listEl.innerHTML = '<div class="empty-state">Пока нет записей</div>';
+                return;
+            }
 
-  // Telegram theme sync (optional override of default dark palette)
-  if (tg?.themeParams?.bg_color) {
-    document.documentElement.style.setProperty('--bg', tg.themeParams.bg_color);
-  }
+            listEl.innerHTML = filteredRecords.map(item => `
+                <div class="record-item">
+                    <div class="record-info">
+                        <div class="record-title">${item.title}</div>
+                        <div class="record-category">${item.category}</div>
+                    </div>
+                    <div class="record-right">
+                        <div class="record-metric">
+                            ${item.hours ? item.hours + 'ч' : ''} 
+                            ${item.money ? item.money.toLocaleString('ru-RU') + ' ₽' : ''}
+                        </div>
+                        <button class="delete-btn" onclick="deleteRecord(${item.id})">&times;</button>
+                    </div>
+                </div>
+            `).join('');
+        }
 
-  render();
-</script>
+        // Инициализация при загрузке
+        render();
+    </script>
 </body>
 </html>
