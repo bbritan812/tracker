@@ -5,63 +5,104 @@
     <title>Blackout Tracker</title>
     <style>
         body { background: #0d0d0d; color: #fff; font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; }
-        .chat-box { background: #121212; border: 1px solid #2a2a2a; padding: 15px; border-radius: 12px; height: 250px; overflow-y: scroll; margin-bottom: 15px; }
-        .input-box { display: flex; gap: 10px; }
-        input, button { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 8px; font-size: 14px; outline: none; }
+        .card { background: #121212; border: 1px solid #2a2a2a; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
+        h2, h3 { margin-top: 0; color: #fff; }
+        .chat-box { background: #121212; border: 1px solid #2a2a2a; padding: 15px; border-radius: 12px; height: 220px; overflow-y: scroll; margin-bottom: 15px; }
+        .input-box { display: flex; gap: 10px; margin-bottom: 15px; }
+        input, button, select { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 8px; font-size: 14px; outline: none; }
         input { flex: 1; }
-        button { cursor: pointer; background: #333; font-weight: bold; }
-        button:hover { background: #444; }
+        button { cursor: pointer; background: #222; font-weight: bold; }
+        button:hover { background: #333; }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 14px; color: #aaa; }
+        .stats-grid span { color: #fff; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <h2 style="font-size: 18px; margin-bottom: 15px;">🖤 BLACKOUT MANAGER</h2>
+    <h2 style="font-size: 18px; margin-bottom: 15px;">🖤 BLACKOUT TRACKER & MANAGER</h2>
+
+    <!-- Статистика трекера -->
+    <div class="card">
+        <h3 style="font-size: 14px; margin-bottom: 10px;">📊 СТАТИСТИКА ЗА СЕГОДНЯ</h3>
+        <div class="stats-grid">
+            <div>Музыка: <span id="statMusic">0</span> ч</div>
+            <div>Учёба: <span id="statStudy">0</span> ч</div>
+            <div>Спорт: <span id="statSport">0</span> ч</div>
+            <div>Прочее: <span id="statOther">0</span> ч</div>
+            <div>Расходы: <span id="statMoney">0</span> ₽</div>
+            <div>Серия: <span id="statStreak">0</span> дней</div>
+        </div>
+    </div>
 
     <!-- Чат с ИИ -->
-    <div class="chat-box" id="chatBox">
-        <div style="color: #777;">Броузерный чат на связи. Пиши задачу или вопрос...</div>
-    </div>
-    <div class="input-box">
-        <input type="text" id="messageInput" placeholder="Написать менеджеру..." onkeydown="if(event.key==='Enter') sendMessage()">
-        <button onclick="sendMessage()">➤</button>
+    <div class="card" style="padding: 0; border: none; background: transparent;">
+        <div class="chat-box" id="chatBox">
+            <div style="color: #777;">Броузерный чат на связи. Пиши задачу или вопрос...</div>
+        </div>
+        <div class="input-box">
+            <input type="text" id="messageInput" placeholder="Написать менеджеру..." onkeydown="if(event.key==='Enter') sendMessage()">
+            <button onclick="sendMessage()">➤</button>
+        </div>
     </div>
 
     <!-- ЕБАНУТЫЕ ФИШКИ BLACKOUT TRACKER -->
-    <div class="blackout-modules" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+    <div class="blackout-modules" style="display: flex; flex-direction: column; gap: 15px;">
 
         <!-- 1. Рулетка битов -->
-        <div style="background: #121212; border: 1px solid #2a2a2a; padding: 15px; border-radius: 12px;">
-            <h3 style="color: #fff; font-size: 14px; margin-bottom: 8px;">🎲 РУЛЕТКА БИТОВ</h3>
+        <div class="card">
+            <h3 style="font-size: 14px; margin-bottom: 8px;">🎲 РУЛЕТКА БИТОВ</h3>
             <div id="rouletteResult" style="color: #a855f7; font-size: 16px; font-weight: bold; margin-bottom: 10px;">Нажми, чтобы получить задачу</div>
-            <button onclick="spinBeatRoulette()" style="background: #222; color: #fff; border: 1px solid #444; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">Крутить рулетку</button>
+            <button onclick="spinBeatRoulette()" style="border: 1px solid #444;">Крутить рулетку</button>
         </div>
 
         <!-- 2. Счётчик вылетов FL Studio -->
-        <div style="background: #121212; border: 1px solid #2a2a2a; padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+        <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
             <div>
-                <h3 style="color: #fff; font-size: 14px; margin-bottom: 4px;">💥 ВЫЛЕТЫ FL STUDIO</h3>
+                <h3 style="font-size: 14px; margin-bottom: 4px;">💥 ВЫЛЕТЫ FL STUDIO</h3>
                 <span style="color: #777; font-size: 12px;">Рейдж-фактор за сегодня</span>
             </div>
             <div style="display: flex; align-items: center; gap: 10px;">
                 <span id="crashCount" style="color: #ef4444; font-size: 20px; font-weight: bold;">0</span>
-                <button onclick="addCrash()" style="background: #ef4444; color: #fff; border: none; width: 32px; height: 32px; border-radius: 8px; font-weight: bold; cursor: pointer;">+</button>
+                <button onclick="addCrash()" style="background: #ef4444; color: #fff; border: none; width: 32px; height: 32px; border-radius: 8px; font-weight: bold;">+</button>
             </div>
         </div>
 
         <!-- 3. Кладбище недоделок -->
-        <div style="background: #121212; border: 1px solid #2a2a2a; padding: 15px; border-radius: 12px;">
-            <h3 style="color: #fff; font-size: 14px; margin-bottom: 8px;">🪦 КЛАДБИЩЕ НЕДОДЕЛОК</h3>
-            <input type="text" id="deadProjectInput" placeholder="Название мертвого бита..." style="width: 100%; box-sizing: border-box; margin-bottom: 8px;">
-            <button onclick="addDeadProject()" style="background: #333; color: #fff; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 12px;">Закопать проект</button>
+        <div class="card">
+            <h3 style="font-size: 14px; margin-bottom: 8px;">🪦 КЛАДБИЩЕ НЕДОДЕЛОК</h3>
+            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                <input type="text" id="deadProjectInput" placeholder="Название мертвого бита...">
+                <button onclick="addDeadProject()">Закопать</button>
+            </div>
             <ul id="graveyardList" style="margin-top: 10px; padding-left: 15px; color: #888; font-size: 13px;"></ul>
         </div>
 
     </div>
 
     <script>
-        // Ссылка на твой воркер в Cloudflare
         const WORKER_URL = "https://dark-credit-4079.floda486.workers.dev/";
 
+        // Локальное состояние трекера для отправки воркеру
+        let trackerData = {
+            today: { musicHours: 2, studyHours: 1, sportHours: 0, otherHours: 1, money: 350, count: 1 },
+            goals: { music: 3, study: 2, sport: 1 },
+            week: { hours: 15, money: 2400 },
+            streak: 4,
+            recentRecords: ["Написан бит в стиле Jerk Drill", "Поучил инглиш 1 час"]
+        };
+
+        // Рендерим стартовые статы
+        function updateStatsUI() {
+            document.getElementById('statMusic').textContent = trackerData.today.musicHours;
+            document.getElementById('statStudy').textContent = trackerData.today.studyHours;
+            document.getElementById('statSport').textContent = trackerData.today.sportHours;
+            document.getElementById('statOther').textContent = trackerData.today.otherHours;
+            document.getElementById('statMoney').textContent = trackerData.today.money;
+            document.getElementById('statStreak').textContent = trackerData.streak;
+        }
+        updateStatsUI();
+
+        // Отправка сообщения в воркер с учетом контекста трекера
         async function sendMessage() {
             const input = document.getElementById('messageInput');
             const chatBox = document.getElementById('chatBox');
@@ -76,7 +117,10 @@
                 const response = await fetch(WORKER_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: text })
+                    body: JSON.stringify({ 
+                        message: text,
+                        tracker: trackerData 
+                    })
                 });
 
                 const data = await response.json();
@@ -91,7 +135,7 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        // Логика рулетки битов
+        // Рулетка битов
         function spinBeatRoulette() {
             const bpms = [130, 140, 142, 145, 150, 155, 160];
             const keys = ['F minor', 'C# minor', 'D# minor', 'G minor', 'A minor'];
