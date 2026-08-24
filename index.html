@@ -63,6 +63,53 @@
             color: var(--text-main);
         }
 
+        /* Блок ИИ-помощника */
+        .ai-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 16px;
+        }
+
+        .ai-header {
+            font-size: 11px;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .ai-input-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .ai-send-btn {
+            background: var(--accent-color);
+            color: var(--text-main);
+            border: none;
+            border-radius: 10px;
+            padding: 0 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .ai-send-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .ai-response {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px solid var(--border-color);
+            display: none;
+        }
+
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -94,7 +141,6 @@
             color: var(--text-muted);
             margin-bottom: 10px;
             text-transform: uppercase;
-            letter-gap: 0.5px;
             letter-spacing: 0.5px;
         }
 
@@ -184,6 +230,7 @@
             cursor: pointer;
             transition: background 0.2s;
             box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+            z-index: 10;
         }
 
         .add-btn:hover {
@@ -290,8 +337,18 @@
     <h1>Трекер</h1>
 
     <div class="tabs">
-        <div class="tab active" onclick="switchTab('today')">Сегодня</div>
-        <div class="tab" onclick="switchTab('week')">Неделя</div>
+        <div class="tab active" onclick="switchTab('today', event)">Сегодня</div>
+        <div class="tab" onclick="switchTab('week', event)">Неделя</div>
+    </div>
+
+    <!-- Блок ИИ-помощника -->
+    <div class="ai-container">
+        <div class="ai-header">💀 BLACKOUT AI MANAGER</div>
+        <div class="ai-input-group">
+            <input type="text" id="aiInput" class="form-input" placeholder="Например: 2к на софт и 3ч на бит...">
+            <button type="button" id="aiSendBtn" class="ai-send-btn">OK</button>
+        </div>
+        <div id="aiResponse" class="ai-response"></div>
     </div>
 
     <div class="stats-grid">
@@ -350,7 +407,7 @@
         let currentTab = 'today';
         let records = JSON.parse(localStorage.getItem('tracker_records')) || [];
 
-        function switchTab(tab) {
+        function switchTab(tab, event) {
             currentTab = tab;
             document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
             event.target.classList.add('active');
@@ -396,12 +453,40 @@
             render();
         }
 
+        // Логика ИИ-помощника
+        document.addEventListener('DOMContentLoaded', () => {
+            const aiSendBtn = document.getElementById('aiSendBtn');
+            const aiInput = document.getElementById('aiInput');
+
+            if (aiSendBtn) {
+                aiSendBtn.addEventListener('click', handleAIPrompt);
+                aiInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') handleAIPrompt();
+                });
+            }
+        });
+
+        function handleAIPrompt() {
+            const inputField = document.getElementById('aiInput');
+            const responseBox = document.getElementById('aiResponse');
+            const text = inputField.value.trim();
+
+            if (!text) return;
+
+            responseBox.style.display = 'block';
+            responseBox.textContent = '💀 ИИ анализирует запрос...';
+
+            setTimeout(() => {
+                responseBox.textContent = '💀 Запрос принят. Скоро подключим парсер в код!';
+                inputField.value = '';
+            }, 600);
+        }
+
         function render() {
             const listEl = document.getElementById('recordsList');
             const totalHoursEl = document.getElementById('totalHours');
             const totalMoneyEl = document.getElementById('totalMoney');
 
-            // Фильтрация по вкладкам (сегодня / последние 7 дней)
             const now = new Date();
             const filteredRecords = records.filter(item => {
                 const itemDate = new Date(item.date);
@@ -414,7 +499,6 @@
                 }
             });
 
-            // Подсчет итогов
             let totalH = 0;
             let totalM = 0;
 
@@ -426,7 +510,6 @@
             totalHoursEl.textContent = totalH + 'ч';
             totalMoneyEl.textContent = totalM.toLocaleString('ru-RU') + ' ₽';
 
-            // Отрисовка списка
             if (filteredRecords.length === 0) {
                 listEl.innerHTML = '<div class="empty-state">Пока нет записей</div>';
                 return;
@@ -449,7 +532,6 @@
             `).join('');
         }
 
-        // Инициализация при загрузке
         render();
     </script>
 </body>
