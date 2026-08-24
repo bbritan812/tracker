@@ -2,114 +2,211 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blackout Tracker</title>
     <style>
-        body { background: #0d0d0d; color: #fff; font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; }
-        .card { background: #121212; border: 1px solid #2a2a2a; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
-        h2, h3 { margin-top: 0; color: #fff; }
-        .chat-box { background: #121212; border: 1px solid #2a2a2a; padding: 15px; border-radius: 12px; height: 220px; overflow-y: scroll; margin-bottom: 15px; }
-        .input-box { display: flex; gap: 10px; margin-bottom: 15px; }
-        input, button, select { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 8px; font-size: 14px; outline: none; }
-        input { flex: 1; }
-        button { cursor: pointer; background: #222; font-weight: bold; }
-        button:hover { background: #333; }
-        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 14px; color: #aaa; }
-        .stats-grid span { color: #fff; font-weight: bold; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background: #0a0a0a; color: #fff; padding: 15px; max-width: 480px; margin: auto; display: flex; flex-direction: column; height: 100vh; }
+        
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #1f1f1f; }
+        h1 { font-size: 16px; font-weight: 800; letter-spacing: 0.5px; color: #fff; }
+        .streak-badge { background: #1a1a1a; border: 1px solid #333; padding: 4px 10px; border-radius: 20px; font-size: 12px; color: #a855f7; font-weight: bold; }
+
+        /* Вкладки */
+        .tabs { display: flex; background: #121212; border: 1px solid #222; border-radius: 12px; padding: 4px; margin-bottom: 15px; }
+        .tab-btn { flex: 1; background: none; border: none; color: #777; padding: 10px; font-size: 13px; font-weight: bold; cursor: pointer; border-radius: 8px; transition: 0.2s; }
+        .tab-btn.active { background: #222; color: #fff; }
+
+        .tab-content { display: none; flex: 1; flex-direction: column; overflow-y: auto; }
+        .tab-content.active { display: flex; }
+
+        .card { background: #121212; border: 1px solid #1f1f1f; border-radius: 14px; padding: 15px; margin-bottom: 12px; }
+        
+        /* Таймер */
+        .timer-display { font-size: 48px; font-weight: 900; text-align: center; margin: 20px 0; color: #fff; font-variant-numeric: tabular-nums; }
+        .timer-controls { display: flex; gap: 10px; }
+        .btn { flex: 1; background: #222; color: #fff; border: 1px solid #333; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 14px; text-align: center; }
+        .btn-primary { background: #a855f7; border-color: #a855f7; color: #000; }
+        .btn-danger { background: #ef4444; border-color: #ef4444; }
+        
+        select { width: 100%; background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 10px; font-size: 14px; margin-bottom: 10px; outline: none; }
+
+        /* Чат */
+        .chat-box { flex: 1; background: #121212; border: 1px solid #1f1f1f; border-radius: 14px; padding: 15px; overflow-y: auto; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; height: 350px; }
+        .msg { padding: 10px 14px; border-radius: 10px; font-size: 14px; max-width: 85%; line-height: 1.4; }
+        .msg.user { background: #222; align-self: flex-end; color: #fff; }
+        .msg.ai { background: #1a1625; border: 1px solid #2d2242; align-self: flex-start; color: #e9d5ff; }
+        
+        .input-area { display: flex; gap: 8px; }
+        input[type="text"], input[type="number"] { flex: 1; background: #121212; border: 1px solid #222; color: #fff; padding: 12px; border-radius: 10px; font-size: 14px; outline: none; }
+        .send-btn { background: #fff; color: #000; border: none; width: 45px; border-radius: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+        /* Статы */
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .stat-box { background: #181818; padding: 12px; border-radius: 10px; border: 1px solid #262626; }
+        .stat-box span { display: block; font-size: 20px; font-weight: bold; color: #fff; margin-top: 4px; }
+        .stat-box label { font-size: 12px; color: #777; }
     </style>
 </head>
 <body>
 
-    <h2 style="font-size: 18px; margin-bottom: 15px;">🖤 BLACKOUT TRACKER & MANAGER</h2>
+    <header>
+        <h1>BLACKOUT SYSTEM</h1>
+        <div class="streak-badge" id="streakBadge">🔥 СЕРИЯ: 4 ДНЯ</div>
+    </header>
 
-    <!-- Статистика трекера -->
-    <div class="card">
-        <h3 style="font-size: 14px; margin-bottom: 10px;">📊 СТАТИСТИКА ЗА СЕГОДНЯ</h3>
-        <div class="stats-grid">
-            <div>Музыка: <span id="statMusic">0</span> ч</div>
-            <div>Учёба: <span id="statStudy">0</span> ч</div>
-            <div>Спорт: <span id="statSport">0</span> ч</div>
-            <div>Прочее: <span id="statOther">0</span> ч</div>
-            <div>Расходы: <span id="statMoney">0</span> ₽</div>
-            <div>Серия: <span id="statStreak">0</span> дней</div>
-        </div>
+    <!-- Навигация -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('timer')">Таймер</button>
+        <button class="tab-btn" onclick="switchTab('chat')">Менеджер</button>
+        <button class="tab-btn" onclick="switchTab('stats')">Трекер</button>
     </div>
 
-    <!-- Чат с ИИ -->
-    <div class="card" style="padding: 0; border: none; background: transparent;">
+    <!-- Вкладка 1: Таймер Фокуса -->
+    <div id="tab-timer" class="tab-content active">
+        <div class="card">
+            <label style="font-size: 13px; color: #777; margin-bottom: 6px; display: block;">Категория фокуса:</label>
+            <select id="timerCategory">
+                <option value="studyHours">Работа / Учёба</option>
+                <option value="sportHours">Спорт / Зал</option>
+                <option value="otherHours">Творчество / Прочее</option>
+            </select>
+
+            <div class="timer-display" id="timerDisplay">00:00</div>
+
+            <div class="timer-controls">
+                <button class="btn btn-primary" id="startTimerBtn" onclick="toggleTimer()">Старт</button>
+                <button class="btn btn-danger" onclick="resetTimer()">Сброс</button>
+            </div>
+        </div>
+        <div style="text-align: center; font-size: 12px; color: #555;">Таймер автоматически добавляет отработанное время в твою статистику.</div>
+    </div>
+
+    <!-- Вкладка 2: Чат с менеджером -->
+    <div id="tab-chat" class="tab-content">
         <div class="chat-box" id="chatBox">
-            <div style="color: #777;">Броузерный чат на связи. Пиши задачу или вопрос...</div>
+            <div class="msg ai">Здарова. Я твой менеджер. Че по задачам на сегодня? Выкладывай прогресс.</div>
         </div>
-        <div class="input-box">
+        <div class="input-area">
             <input type="text" id="messageInput" placeholder="Написать менеджеру..." onkeydown="if(event.key==='Enter') sendMessage()">
-            <button onclick="sendMessage()">➤</button>
+            <button class="send-btn" onclick="sendMessage()">➤</button>
         </div>
     </div>
 
-    <!-- ЕБАНУТЫЕ ФИШКИ BLACKOUT TRACKER -->
-    <div class="blackout-modules" style="display: flex; flex-direction: column; gap: 15px;">
-
-        <!-- 1. Рулетка битов -->
+    <!-- Вкладка 3: Трекер и Расходы -->
+    <div id="tab-stats" class="tab-content">
         <div class="card">
-            <h3 style="font-size: 14px; margin-bottom: 8px;">🎲 РУЛЕТКА БИТОВ</h3>
-            <div id="rouletteResult" style="color: #a855f7; font-size: 16px; font-weight: bold; margin-bottom: 10px;">Нажми, чтобы получить задачу</div>
-            <button onclick="spinBeatRoulette()" style="border: 1px solid #444;">Крутить рулетку</button>
-        </div>
-
-        <!-- 2. Счётчик вылетов FL Studio -->
-        <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <h3 style="font-size: 14px; margin-bottom: 4px;">💥 ВЫЛЕТЫ FL STUDIO</h3>
-                <span style="color: #777; font-size: 12px;">Рейдж-фактор за сегодня</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span id="crashCount" style="color: #ef4444; font-size: 20px; font-weight: bold;">0</span>
-                <button onclick="addCrash()" style="background: #ef4444; color: #fff; border: none; width: 32px; height: 32px; border-radius: 8px; font-weight: bold;">+</button>
+            <h3 style="font-size: 14px; margin-bottom: 12px;">📊 ПРОГРЕСС ЗА СЕГОДНЯ</h3>
+            <div class="stats-grid">
+                <div class="stat-box"><label>Работа/Учёба</label><span id="statStudy">0</span>ч</div>
+                <div class="stat-box"><label>Спорт</label><span id="statSport">0</span>ч</div>
+                <div class="stat-box"><label>Прочее</label><span id="statOther">0</span>ч</div>
+                <div class="stat-box"><label>Расходы</label><span id="statMoney">0</span>₽</div>
             </div>
         </div>
 
-        <!-- 3. Кладбище недоделок -->
         <div class="card">
-            <h3 style="font-size: 14px; margin-bottom: 8px;">🪦 КЛАДБИЩЕ НЕДОДЕЛОК</h3>
-            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                <input type="text" id="deadProjectInput" placeholder="Название мертвого бита...">
-                <button onclick="addDeadProject()">Закопать</button>
+            <h3 style="font-size: 14px; margin-bottom: 10px;">💸 ЗАПИСАТЬ РАСХОД</h3>
+            <div style="display: flex; gap: 8px;">
+                <input type="number" id="expenseInput" placeholder="Сумма в рублях...">
+                <button class="btn" style="flex: 0 0 100px;" onclick="addExpense()">Записать</button>
             </div>
-            <ul id="graveyardList" style="margin-top: 10px; padding-left: 15px; color: #888; font-size: 13px;"></ul>
         </div>
-
     </div>
 
     <script>
         const WORKER_URL = "https://dark-credit-4079.floda486.workers.dev/";
 
-        // Локальное состояние трекера для отправки воркеру
         let trackerData = {
-            today: { musicHours: 2, studyHours: 1, sportHours: 0, otherHours: 1, money: 350, count: 1 },
-            goals: { music: 3, study: 2, sport: 1 },
-            week: { hours: 15, money: 2400 },
-            streak: 4,
-            recentRecords: ["Написан бит в стиле Jerk Drill", "Поучил инглиш 1 час"]
+            today: { studyHours: 2, sportHours: 0, otherHours: 1, money: 350 },
+            goals: { study: 3, sport: 1 },
+            streak: 4
         };
 
-        // Рендерим стартовые статы
-        function updateStatsUI() {
-            document.getElementById('statMusic').textContent = trackerData.today.musicHours;
+        function updateUI() {
             document.getElementById('statStudy').textContent = trackerData.today.studyHours;
             document.getElementById('statSport').textContent = trackerData.today.sportHours;
             document.getElementById('statOther').textContent = trackerData.today.otherHours;
             document.getElementById('statMoney').textContent = trackerData.today.money;
-            document.getElementById('statStreak').textContent = trackerData.streak;
+            document.getElementById('streakBadge').textContent = `🔥 СЕРИЯ: ${trackerData.streak} ДНЯ`;
         }
-        updateStatsUI();
+        updateUI();
 
-        // Отправка сообщения в воркер с учетом контекста трекера
+        // Переключение вкладок
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById('tab-' + tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Логика таймера
+        let timerInterval = null;
+        let secondsLeft = 0; // Начинаем с нуля (секундомер) или можно сделать обратный отсчет
+        let totalSecondsWorked = 0;
+        let isRunning = false;
+
+        function toggleTimer() {
+            const btn = document.getElementById('startTimerBtn');
+            if (!isRunning) {
+                isRunning = true;
+                btn.textContent = "Пауза";
+                btn.classList.add('btn-danger');
+                
+                timerInterval = setInterval(() => {
+                    totalSecondsWorked++;
+                    let mins = Math.floor(totalSecondsWorked / 60);
+                    let secs = totalSecondsWorked % 60;
+                    document.getElementById('timerDisplay').textContent = 
+                        String(mins).padStart(2, '0') + ":" + String(secs).padStart(2, '0');
+                }, 1000);
+            } else {
+                isRunning = false;
+                btn.textContent = "Продолжить";
+                btn.classList.remove('btn-danger');
+                clearInterval(timerInterval);
+
+                // Каждые завершенные 60 минут (или для теста можно меньше) записываем в часы
+                let hoursWorked = parseFloat((totalSecondsWorked / 3600).toFixed(1));
+                if (hoursWorked > 0) {
+                    const category = document.getElementById('timerCategory').value;
+                    trackerData.today[category] = parseFloat((trackerData.today[category] + hoursWorked).toFixed(1));
+                    totalSecondsWorked = 0; // сбрасываем счетчик текущей сессии
+                    updateUI();
+                }
+            }
+        }
+
+        function resetTimer() {
+            isRunning = false;
+            clearInterval(timerInterval);
+            totalSecondsWorked = 0;
+            document.getElementById('timerDisplay').textContent = "00:00";
+            const btn = document.getElementById('startTimerBtn');
+            btn.textContent = "Старт";
+            btn.classList.remove('btn-danger');
+        }
+
+        // Расходы
+        function addExpense() {
+            const input = document.getElementById('expenseInput');
+            const val = parseInt(input.value);
+            if (isNaN(val) || val <= 0) return;
+
+            trackerData.today.money += val;
+            input.value = '';
+            updateUI();
+        }
+
+        // Чат с ИИ
         async function sendMessage() {
             const input = document.getElementById('messageInput');
             const chatBox = document.getElementById('chatBox');
             const text = input.value.trim();
             if (!text) return;
 
-            chatBox.innerHTML += `<div style="margin-bottom: 8px;"><b>Ты:</b> ${text}</div>`;
+            chatBox.innerHTML += `<div class="msg user">${text}</div>`;
             input.value = '';
             chatBox.scrollTop = chatBox.scrollHeight;
 
@@ -125,47 +222,14 @@
 
                 const data = await response.json();
                 if (data.reply) {
-                    chatBox.innerHTML += `<div style="margin-bottom: 8px; color: #a855f7;"><b>Manager:</b> ${data.reply}</div>`;
+                    chatBox.innerHTML += `<div class="msg ai">${data.reply}</div>`;
                 } else {
-                    chatBox.innerHTML += `<div style="margin-bottom: 8px; color: #ef4444;"><b>Ошибка:</b> ${data.error}</div>`;
+                    chatBox.innerHTML += `<div class="msg ai" style="color:#ef4444;">Ошибка: ${data.error}</div>`;
                 }
             } catch (err) {
-                chatBox.innerHTML += `<div style="margin-bottom: 8px; color: #ef4444;"><b>Ошибка сети:</b> ${err.message}</div>`;
+                chatBox.innerHTML += `<div class="msg ai" style="color:#ef4444;">Ошибка соединения с сервером.</div>`;
             }
             chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        // Рулетка битов
-        function spinBeatRoulette() {
-            const bpms = [130, 140, 142, 145, 150, 155, 160];
-            const keys = ['F minor', 'C# minor', 'D# minor', 'G minor', 'A minor'];
-            const genres = ['Jerk Drill', 'UK Drill', 'Hoodtrap', 'Jersey Club', 'Sexy Drill'];
-            
-            const randomBpm = bpms[Math.floor(Math.random() * bpms.length)];
-            const randomKey = keys[Math.floor(Math.random() * keys.length)];
-            const randomGenre = genres[Math.floor(Math.random() * genres.length)];
-            
-            document.getElementById('rouletteResult').textContent = `${randomBpm} BPM • ${randomKey} • ${randomGenre}`;
-        }
-
-        // Счётчик вылетов
-        let crashes = 0;
-        function addCrash() {
-            crashes++;
-            document.getElementById('crashCount').textContent = crashes;
-        }
-
-        // Кладбище проектов
-        const graveyard = [];
-        function addDeadProject() {
-            const input = document.getElementById('deadProjectInput');
-            if (!input.value.trim()) return;
-            
-            graveyard.push(input.value);
-            input.value = '';
-            
-            const list = document.getElementById('graveyardList');
-            list.innerHTML = graveyard.map(item => `<li style="margin-bottom: 4px;">🪦 ${item}</li>`).join('');
         }
     </script>
 </body>
