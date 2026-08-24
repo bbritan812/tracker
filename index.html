@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Трекер</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
             --bg-color: #0f0f11;
@@ -344,6 +343,7 @@
         }
 
         .modal-actions {
+            дикплей: flex;
             display: flex;
             gap: 10px;
             margin-top: 20px;
@@ -405,7 +405,7 @@
     <div class="chat-container" id="chatContainer">
         <div class="chat-messages" id="chatMessages"></div>
         <div class="chat-input-area">
-            <input type="text" id="chatInput" class="chat-input" placeholder="Напиши что-нибудь ИИ...">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Напиши темп, часы или поболтай...">
             <button type="button" id="chatSendBtn" class="chat-send-btn">Send</button>
         </div>
     </div>
@@ -450,7 +450,7 @@
         let currentTab = 'today';
         let records = JSON.parse(localStorage.getItem('tracker_records')) || [];
         let chatHistory = JSON.parse(localStorage.getItem('tracker_chat')) || [
-            { sender: 'ai', text: '💀 BLACKOUT AI MANAGER на связи. Накидывай темп, часы или расходы — разберу и запишу.' }
+            { sender: 'ai', text: '💀 BLACKOUT AI MANAGER на связи. Накидывай темп, часы, расходы или просто пиши — разберемся.' }
         ];
 
         const numberWords = {
@@ -519,19 +519,16 @@
             render();
         }
 
-        // Интеллектуальный парсер (цифры и слова)
         function parseInputText(rawText) {
             const text = rawText.toLowerCase();
             let hours = 0;
             let money = 0;
             let category = 'Прочее';
 
-            // 1. Ищем часы через цифры (например: 3ч, 2 часа, 1.5 часа)
             const hourMatch = text.match(/(\d+[\.,]?\d*)\s*(ч|час|часов)/);
             if (hourMatch) {
                 hours = parseFloat(hourMatch[1].replace(',', '.'));
             } else {
-                // Ищем часы через слова (например: три часа, полтора часа)
                 for (let word in numberWords) {
                     const regex = new RegExp(`(${word})\\s*(ч|час|часов)`);
                     if (regex.test(text)) {
@@ -541,7 +538,6 @@
                 }
             }
 
-            // 2. Ищем деньги (например: 2000, 2к, 500р, 1.5к)
             const moneyMatch = text.match(/(\d+[\.,]?\d*)\s*(к|тыс|р|руб)/);
             if (moneyMatch) {
                 let val = parseFloat(moneyMatch[1].replace(',', '.'));
@@ -551,7 +547,6 @@
                 money = val;
             }
 
-            // 3. Определяем категорию
             if (text.includes('бит') || text.includes('свод') || text.includes('софт') || text.includes('фл') || text.includes('музык') || text.includes('трек')) {
                 category = 'Музыка';
             } else if (text.includes('учеб') || text.includes('огэ') || text.includes('книг') || text.includes('курс')) {
@@ -563,34 +558,19 @@
             return { hours, money, category };
         }
 
-        // Обработка сообщений в чате
-        document.addEventListener('DOMContentLoaded', () => {
-            const chatSendBtn = document.getElementById('chatSendBtn');
-            const chatInput = document.getElementById('chatInput');
-
-            if (chatSendBtn) {
-                chatSendBtn.addEventListener('click', handleChatMessage);
-                chatInput.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') handleChatMessage();
-                });
-            }
-            render();
-        });
-
         function handleChatMessage() {
             const inputField = document.getElementById('chatInput');
             const rawText = inputField.value.trim();
             if (!rawText) return;
 
-            // Добавляем сообщение пользователя в чат
             chatHistory.push({ sender: 'user', text: rawText });
             inputField.value = '';
             renderChat();
 
-            // Парсим и заносим запись в трекер
             const parsed = parseInputText(rawText);
-            
-            if (parsed.hours > 0 || parsed.money > 0) {
+            let hasData = parsed.hours > 0 || parsed.money > 0;
+
+            if (hasData) {
                 const newRecord = {
                     id: Date.now(),
                     title: rawText,
@@ -603,17 +583,34 @@
                 localStorage.setItem('tracker_records', JSON.stringify(records));
             }
 
-            // Ответ ИИ
             setTimeout(() => {
-                let reply = `💀 Записано в категорию «${parsed.category}».`;
-                if (parsed.hours > 0 && parsed.money > 0) {
-                    reply = `💀 Учтено: ${parsed.hours}ч и ${parsed.money.toLocaleString('ru-RU')} ₽ («${parsed.category}»). Плотный темп.`;
-                } else if (parsed.hours > 0) {
-                    reply = `💀 Зафиксировано: ${parsed.hours}ч в категории «${parsed.category}». База.`;
-                } else if (parsed.money > 0) {
-                    reply = `💀 Траты зафиксированы: ${parsed.money.toLocaleString('ru-RU')} ₽ («${parsed.category}»).`;
+                let reply = '';
+                const textLower = rawText.toLowerCase();
+
+                if (hasData) {
+                    if (parsed.hours > 0 && parsed.money > 0) {
+                        reply = `💀 Учтено: ${parsed.hours}ч и ${parsed.money.toLocaleString('ru-RU')} ₽ («${parsed.category}»). Плотный темп.`;
+                    } else if (parsed.hours > 0) {
+                        reply = `💀 Зафиксировано: ${parsed.hours}ч в категории «${parsed.category}». База.`;
+                    } else {
+                        reply = `💀 Траты зафиксированы: ${parsed.money.toLocaleString('ru-RU')} ₽ («${parsed.category}»).`;
+                    }
                 } else {
-                    reply = `💀 Принято. Но в сообщении нет явных часов или трат, в трекер не падало.`;
+                    // Умные ответы на обычный пиздёж / приветствия
+                    if (textLower.includes('привет') || text.includes('здаров') || text.includes('хай')) {
+                        reply = '💀 Здарово. Чё по планам на сегодня? Накидывай часы или траты, я оформлю.';
+                    } else if (textLower.includes('как дела') || text.includes('чё как')) {
+                        reply = '💀 Всё под контролем, вайб держим. Готов принимать статусы по битам или расходам.';
+                    } else if (textLower.includes('спасибо') || text.includes('спс')) {
+                        reply = '💀 На связи.';
+                    } else {
+                        const fallbacks = [
+                            '💀 Принято к сведению. Но если хочешь закинуть это в трекер, добавь цифры — часы или бабки.',
+                            '💀 Слышу. Если это задача или расход, черкани точнее с цифрами, я занесу в базу.',
+                            '💀 Вайб уловил, но в трекер падает только конкретика: часы работы или суммы трат.'
+                        ];
+                        reply = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+                    }
                 }
 
                 chatHistory.push({ sender: 'ai', text: reply });
