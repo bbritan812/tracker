@@ -3,57 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLACKOUT Tracker</title>
-
+    <title>Трекер</title>
     <style>
         :root {
             --bg-color: #0f0f11;
             --card-bg: #18181b;
-            --card-hover: #202024;
             --accent-color: #7c3aed;
             --accent-hover: #6d28d9;
             --text-main: #f4f4f5;
             --text-muted: #a1a1aa;
             --border-color: #27272a;
-            --danger: #ef4444;
-            --success: #22c55e;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family:
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                Roboto,
-                Helvetica,
-                Arial,
-                sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            background: var(--bg-color);
+            background-color: var(--bg-color);
             color: var(--text-main);
             padding: 16px;
-            max-width: 650px;
+            max-width: 600px;
             margin: 0 auto;
         }
 
         h1 {
-            font-size: 22px;
-            margin-bottom: 4px;
-            font-weight: 700;
+            font-size: 20px;
+            margin-bottom: 16px;
+            font-weight: 600;
         }
-
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 12px;
-            margin-bottom: 18px;
-        }
-
-        /* TABS */
 
         .tabs {
             display: flex;
@@ -62,34 +43,30 @@
             padding: 4px;
             margin-bottom: 16px;
             border: 1px solid var(--border-color);
-            gap: 3px;
         }
 
         .tab {
             flex: 1;
             text-align: center;
-            padding: 10px 6px;
-            font-size: 12px;
-            font-weight: 600;
+            padding: 10px;
+            font-size: 13px;
+            font-weight: 500;
             color: var(--text-muted);
             cursor: pointer;
             border-radius: 8px;
-            transition: 0.2s ease;
-            user-select: none;
+            transition: all 0.2s ease;
         }
 
         .tab.active {
             background: var(--accent-color);
-            color: white;
+            color: var(--text-main);
         }
-
-        /* CARDS */
 
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 14px;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .stat-card {
@@ -100,170 +77,30 @@
         }
 
         .stat-label {
-            font-size: 11px;
+            font-size: 12px;
             color: var(--text-muted);
             margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         .stat-value {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
+            color: var(--text-main);
         }
 
         .section-title {
-            font-size: 12px;
+            font-size: 14px;
             color: var(--text-muted);
-            margin: 20px 0 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.7px;
-            font-weight: 600;
-        }
-
-        /* STREAK */
-
-        .streak-card {
-            background: linear-gradient(
-                135deg,
-                rgba(124, 58, 237, 0.16),
-                rgba(124, 58, 237, 0.04)
-            );
-
-            border: 1px solid rgba(124, 58, 237, 0.35);
-            border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 14px;
-
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .streak-title {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-
-        .streak-value {
-            font-size: 22px;
-            font-weight: 700;
-        }
-
-        .streak-text {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 3px;
-        }
-
-        /* GOALS */
-
-        .goal-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 14px;
             margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-
-        .goal-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 9px;
-        }
-
-        .goal-name {
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .goal-value {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .progress-bar {
-            height: 8px;
-            background: var(--bg-color);
-            border-radius: 20px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-        }
-
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: var(--accent-color);
-            border-radius: 20px;
-            transition: width 0.4s ease;
-        }
-
-        /* QUICK ACTIONS */
-
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-        }
-
-        .quick-btn {
-            border: 1px solid var(--border-color);
-            background: var(--card-bg);
-            color: var(--text-main);
-            border-radius: 10px;
-            padding: 10px 5px;
-            font-size: 11px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .quick-btn:hover {
-            background: var(--card-hover);
-            border-color: var(--accent-color);
-        }
-
-        /* CATEGORY STATS */
-
-        .category-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .category-row {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 12px;
-            border-radius: 10px;
-
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .category-left {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .category-name {
-            font-size: 13px;
-        }
-
-        .category-hours {
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        /* RECORDS */
 
         .records-list {
             display: flex;
             flex-direction: column;
             gap: 8px;
-            margin-bottom: 90px;
+            margin-bottom: 80px;
         }
 
         .record-item {
@@ -271,58 +108,40 @@
             border: 1px solid var(--border-color);
             border-radius: 10px;
             padding: 12px;
-
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 10px;
         }
 
         .record-info {
-            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
         .record-title {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 500;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            max-width: 350px;
-        }
-
-        .record-meta {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-            margin-top: 6px;
-            flex-wrap: wrap;
         }
 
         .record-category {
-            font-size: 10px;
+            font-size: 11px;
             color: var(--accent-color);
             background: rgba(124, 58, 237, 0.1);
-            padding: 3px 6px;
+            padding: 2px 6px;
             border-radius: 4px;
-        }
-
-        .record-date {
-            font-size: 10px;
-            color: var(--text-muted);
+            width: fit-content;
         }
 
         .record-right {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .record-metric {
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 600;
-            text-align: right;
-            white-space: nowrap;
         }
 
         .delete-btn {
@@ -330,109 +149,57 @@
             border: none;
             color: var(--text-muted);
             cursor: pointer;
-            font-size: 20px;
-            padding: 3px;
-            transition: 0.2s;
+            font-size: 16px;
+            padding: 4px;
+            transition: color 0.2s;
         }
 
         .delete-btn:hover {
-            color: var(--danger);
+            color: #ef4444;
         }
 
-        /* WEEK CHART */
-
-        .chart {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 16px 12px 12px;
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-around;
-            gap: 8px;
-            height: 210px;
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 40px;
         }
 
-        .chart-day {
-            flex: 1;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 7px;
-        }
-
-        .bar-wrapper {
-            height: 150px;
-            display: flex;
-            align-items: flex-end;
-            width: 100%;
-            justify-content: center;
-        }
-
-        .bar {
-            width: 70%;
-            max-width: 35px;
-            min-height: 3px;
+        .add-btn {
+            position: fixed;
+            bottom: 16px;
+            left: 16px;
+            right: 16px;
+            max-width: 568px;
+            margin: 0 auto;
             background: var(--accent-color);
-            border-radius: 6px 6px 3px 3px;
-            transition: height 0.4s ease;
-        }
-
-        .bar-value {
-            font-size: 10px;
-            color: var(--text-muted);
-            height: 14px;
-        }
-
-        .bar-label {
-            font-size: 10px;
-            color: var(--text-muted);
-        }
-
-        /* WEEK COMPARE */
-
-        .compare-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border: none;
             border-radius: 12px;
             padding: 14px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+            z-index: 10;
         }
 
-        .compare-block {
-            background: var(--bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 9px;
-            padding: 10px;
+        .add-btn:hover {
+            background: var(--accent-hover);
         }
 
-        .compare-label {
-            font-size: 10px;
-            color: var(--text-muted);
-            margin-bottom: 5px;
-        }
-
-        .compare-value {
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        /* CHAT */
-
+        /* ЧАТ С ИИ */
         .chat-container {
             display: none;
             flex-direction: column;
-            height: calc(100vh - 170px);
-            max-height: 650px;
-
+            height: calc(100vh - 140px);
+            max-height: 500px;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             overflow: hidden;
+            margin-bottom: 80px;
         }
 
         .chat-container.active {
@@ -441,26 +208,25 @@
 
         .chat-messages {
             flex: 1;
-            overflow-y: auto;
             padding: 12px;
-
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
 
         .chat-bubble {
-            max-width: 88%;
-            padding: 10px 13px;
+            max-width: 85%;
+            padding: 10px 14px;
             border-radius: 12px;
             font-size: 13px;
-            line-height: 1.45;
+            line-height: 1.4;
             white-space: pre-wrap;
-            word-break: break-word;
         }
 
         .chat-bubble.user {
             background: var(--accent-color);
+            color: var(--text-main);
             align-self: flex-end;
             border-bottom-right-radius: 4px;
         }
@@ -468,25 +234,27 @@
         .chat-bubble.ai {
             background: var(--bg-color);
             border: 1px solid var(--border-color);
+            color: var(--text-main);
             align-self: flex-start;
             border-bottom-left-radius: 4px;
         }
 
         .chat-input-area {
             display: flex;
-            gap: 8px;
             padding: 10px;
+            background: var(--card-bg);
             border-top: 1px solid var(--border-color);
+            gap: 8px;
         }
 
         .chat-input {
             flex: 1;
-            min-width: 0;
             background: var(--bg-color);
             border: 1px solid var(--border-color);
             border-radius: 10px;
-            padding: 11px;
+            padding: 10px;
             color: var(--text-main);
+            font-size: 14px;
             outline: none;
         }
 
@@ -495,67 +263,32 @@
         }
 
         .chat-send-btn {
-            border: none;
             background: var(--accent-color);
-            color: white;
-            padding: 0 15px;
+            color: var(--text-main);
+            border: none;
             border-radius: 10px;
+            padding: 0 16px;
             font-weight: 600;
             cursor: pointer;
+            transition: background 0.2s;
         }
 
-        /* EMPTY */
-
-        .empty-state {
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 13px;
-            padding: 30px 10px;
-        }
-
-        /* ADD BUTTON */
-
-        .add-btn {
-            position: fixed;
-            bottom: 16px;
-            left: 16px;
-            right: 16px;
-            max-width: 618px;
-            margin: auto;
-
-            background: var(--accent-color);
-            color: white;
-
-            border: none;
-            border-radius: 12px;
-
-            padding: 14px;
-            font-size: 14px;
-            font-weight: 700;
-
-            cursor: pointer;
-            z-index: 10;
-
-            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.25);
-        }
-
-        .add-btn:hover {
+        .chat-send-btn:hover {
             background: var(--accent-hover);
         }
 
-        /* MODAL */
-
+        /* Модальное окно */
         .modal {
             display: none;
             position: fixed;
-            inset: 0;
-
-            background: rgba(0,0,0,.7);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(4px);
-
             justify-content: center;
             align-items: flex-end;
-
             z-index: 100;
         }
 
@@ -564,2572 +297,349 @@
         }
 
         .modal-content {
-            width: 100%;
-            max-width: 650px;
-
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-
+            width: 100%;
+            max-width: 600px;
             border-radius: 20px 20px 0 0;
             padding: 20px;
-
-            animation: slideUp .25s ease;
+            animation: slideUp 0.3s ease;
         }
 
         @keyframes slideUp {
-            from {
-                transform: translateY(100%);
-            }
-
-            to {
-                transform: translateY(0);
-            }
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
         }
 
         .modal-title {
-            font-size: 17px;
-            font-weight: 700;
+            font-size: 16px;
+            font-weight: 600;
             margin-bottom: 16px;
         }
 
         .form-group {
-            margin-bottom: 13px;
+            margin-bottom: 14px;
         }
 
         .form-label {
-            display: block;
-            font-size: 11px;
+            font-size: 12px;
             color: var(--text-muted);
             margin-bottom: 6px;
+            display: block;
         }
 
-        .form-input,
-        .form-select {
+        .form-input, .form-select {
             width: 100%;
             background: var(--bg-color);
             border: 1px solid var(--border-color);
-            color: var(--text-main);
-
             border-radius: 10px;
             padding: 12px;
-
+            color: var(--text-main);
             font-size: 14px;
             outline: none;
         }
 
-        .form-input:focus,
-        .form-select:focus {
+        .form-input:focus, .form-select:focus {
             border-color: var(--accent-color);
         }
 
         .modal-actions {
             display: flex;
             gap: 10px;
-            margin-top: 18px;
-        }
-
-        .btn-cancel,
-        .btn-submit {
-            flex: 1;
-            border-radius: 10px;
-            padding: 12px;
-            cursor: pointer;
-            font-weight: 600;
+            margin-top: 20px;
         }
 
         .btn-cancel {
+            flex: 1;
             background: var(--bg-color);
-            color: white;
             border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
         }
 
         .btn-submit {
+            flex: 1;
             background: var(--accent-color);
-            color: white;
             border: none;
-        }
-
-        /* SETTINGS */
-
-        .settings-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 10px;
-        }
-
-        .settings-row {
-            display: grid;
-            grid-template-columns: 1fr 100px;
-            gap: 10px;
-            align-items: center;
-            margin-top: 10px;
-        }
-
-        @media (max-width: 420px) {
-            .quick-actions {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .tab {
-                font-size: 10px;
-                padding: 10px 3px;
-            }
+            color: var(--text-main);
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
         }
     </style>
 </head>
-
 <body>
 
-    <h1>BLACKOUT TRACKER</h1>
-    <div class="subtitle">work • money • discipline</div>
+    <h1>Трекер</h1>
 
     <div class="tabs">
-        <div class="tab active" onclick="switchTab('today', event)">
-            Сегодня
-        </div>
-
-        <div class="tab" onclick="switchTab('week', event)">
-            Неделя
-        </div>
-
-        <div class="tab" onclick="switchTab('chat', event)">
-            💀 AI
-        </div>
-
-        <div class="tab" onclick="switchTab('settings', event)">
-            Цели
-        </div>
+        <div class="tab active" onclick="switchTab('today', event)">Сегодня</div>
+        <div class="tab" onclick="switchTab('week', event)">Неделя</div>
+        <div class="tab" onclick="switchTab('chat', event)">💀 ИИ Чат</div>
     </div>
 
-    <!-- TODAY -->
-
+    <!-- Вкладки Трекера -->
     <div id="trackerMainView">
-
-        <div class="streak-card">
-
-            <div>
-                <div class="streak-title">Текущая серия</div>
-
-                <div class="streak-text">
-                    Дни, когда ты хоть что-то сделал
-                </div>
-            </div>
-
-            <div>
-                <div class="streak-value" id="streakValue">
-                    🔥 0
-                </div>
-            </div>
-
-        </div>
-
-
         <div class="stats-grid">
-
             <div class="stat-card">
-                <div class="stat-label">Сегодня</div>
-                <div class="stat-value" id="totalHours">
-                    0ч
-                </div>
+                <div class="stat-label">Часы</div>
+                <div class="stat-value" id="totalHours">0ч</div>
             </div>
-
             <div class="stat-card">
                 <div class="stat-label">Расходы</div>
-                <div class="stat-value" id="totalMoney">
-                    0 ₽
-                </div>
+                <div class="stat-value" id="totalMoney">0 ₽</div>
             </div>
-
         </div>
 
-
-        <div class="section-title">
-            Цели на сегодня
+        <div class="section-title">Записи</div>
+        <div class="records-list" id="recordsList">
+            <div class="empty-state">Пока нет записей</div>
         </div>
-
-        <div id="goalsContainer"></div>
-
-
-        <div class="section-title">
-            Быстро добавить
-        </div>
-
-        <div class="quick-actions">
-
-            <button class="quick-btn"
-                onclick="quickAdd('Музыка')">
-                🎹 Музыка
-            </button>
-
-            <button class="quick-btn"
-                onclick="quickAdd('Учеба')">
-                📚 Учёба
-            </button>
-
-            <button class="quick-btn"
-                onclick="quickAdd('Спорт')">
-                🏋️ Спорт
-            </button>
-
-            <button class="quick-btn"
-                onclick="quickAdd('Траты')">
-                💸 Трата
-            </button>
-
-        </div>
-
-
-        <div class="section-title">
-            По категориям
-        </div>
-
-        <div class="category-list"
-            id="categoryStats">
-        </div>
-
-
-        <div class="section-title">
-            Последние записи
-        </div>
-
-        <div class="records-list"
-            id="recordsList">
-        </div>
-
     </div>
 
-
-    <!-- WEEK -->
-
-    <div id="weekView"
-        style="display:none">
-
-        <div class="stats-grid">
-
-            <div class="stat-card">
-                <div class="stat-label">
-                    Часы за неделю
-                </div>
-
-                <div class="stat-value"
-                    id="weekHours">
-                    0ч
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-label">
-                    Расходы
-                </div>
-
-                <div class="stat-value"
-                    id="weekMoney">
-                    0 ₽
-                </div>
-            </div>
-
-        </div>
-
-
-        <div class="section-title">
-            Активность
-        </div>
-
-        <div class="chart"
-            id="weekChart">
-        </div>
-
-
-        <div class="section-title">
-            Сравнение с прошлой неделей
-        </div>
-
-        <div class="compare-card">
-
-            <div class="compare-block">
-
-                <div class="compare-label">
-                    Прошлая неделя
-                </div>
-
-                <div class="compare-value"
-                    id="previousWeekHours">
-                    0ч
-                </div>
-
-            </div>
-
-
-            <div class="compare-block">
-
-                <div class="compare-label">
-                    Разница
-                </div>
-
-                <div class="compare-value"
-                    id="weekDifference">
-                    0ч
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="section-title">
-            Категории недели
-        </div>
-
-        <div class="category-list"
-            id="weekCategoryStats">
-        </div>
-
-    </div>
-
-
-    <!-- CHAT -->
-
-    <div class="chat-container"
-        id="chatContainer">
-
-        <div class="chat-messages"
-            id="chatMessages">
-        </div>
-
+    <!-- Вкладка Чат с ИИ -->
+    <div class="chat-container" id="chatContainer">
+        <div class="chat-messages" id="chatMessages"></div>
         <div class="chat-input-area">
-
-            <input
-                type="text"
-                id="chatInput"
-                class="chat-input"
-                placeholder="Например: делал 2 бита 3 часа"
-            >
-
-            <button
-                type="button"
-                id="chatSendBtn"
-                class="chat-send-btn"
-            >
-                Send
-            </button>
-
+            <input type="text" id="chatInput" class="chat-input" placeholder="Напиши темп, часы или поболтай с ИИ...">
+            <button type="button" id="chatSendBtn" class="chat-send-btn">Send</button>
         </div>
-
     </div>
 
+    <button class="add-btn" id="mainAddBtn" onclick="openModal()">+ Добавить запись</button>
 
-    <!-- SETTINGS -->
-
-    <div id="settingsView"
-        style="display:none">
-
-        <div class="settings-card">
-
-            <div class="section-title"
-                style="margin-top:0">
-
-                Дневные цели
-
-            </div>
-
-
-            <div class="settings-row">
-
-                <div>
-                    🎹 Музыка
-                </div>
-
-                <input
-                    type="number"
-                    step="0.5"
-                    id="goalMusic"
-                    class="form-input"
-                >
-
-            </div>
-
-
-            <div class="settings-row">
-
-                <div>
-                    📚 Учёба
-                </div>
-
-                <input
-                    type="number"
-                    step="0.5"
-                    id="goalStudy"
-                    class="form-input"
-                >
-
-            </div>
-
-
-            <div class="settings-row">
-
-                <div>
-                    🏋️ Спорт
-                </div>
-
-                <input
-                    type="number"
-                    step="0.5"
-                    id="goalSport"
-                    class="form-input"
-                >
-
-            </div>
-
-
-            <div class="modal-actions">
-
-                <button
-                    class="btn-submit"
-                    onclick="saveGoals()"
-                >
-
-                    Сохранить цели
-
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ADD BUTTON -->
-
-    <button
-        class="add-btn"
-        id="mainAddBtn"
-        onclick="openModal()"
-    >
-
-        + Добавить запись
-
-    </button>
-
-
-    <!-- MODAL -->
-
-    <div class="modal"
-        id="recordModal">
-
+    <!-- Модальное окно -->
+    <div class="modal" id="recordModal">
         <div class="modal-content">
-
-            <div class="modal-title">
-                Новая запись
-            </div>
-
-
-            <form
-                id="recordForm"
-                onsubmit="saveRecord(event)"
-            >
-
-
+            <div class="modal-title">Новая запись</div>
+            <form id="recordForm" onsubmit="saveRecord(event)">
                 <div class="form-group">
-
-                    <label class="form-label">
-                        Что делал / что купил
-                    </label>
-
-                    <input
-                        type="text"
-                        id="recTitle"
-                        class="form-input"
-                        placeholder="Например: Сделал drill beat"
-                        required
-                    >
-
+                    <label class="form-label">Название / Описание</label>
+                    <input type="text" id="recTitle" class="form-input" placeholder="Например: Битмейкинг / Фастфуд" required>
                 </div>
-
-
                 <div class="form-group">
-
-                    <label class="form-label">
-                        Категория
-                    </label>
-
-                    <select
-                        id="recCategory"
-                        class="form-select"
-                    >
-
-                        <option value="Музыка">
-                            🎹 Музыка
-                        </option>
-
-                        <option value="Учеба">
-                            📚 Учёба
-                        </option>
-
-                        <option value="Спорт">
-                            🏋️ Спорт
-                        </option>
-
-                        <option value="Траты">
-                            💸 Траты
-                        </option>
-
-                        <option value="Прочее">
-                            📌 Прочее
-                        </option>
-
+                    <label class="form-label">Категория</label>
+                    <select id="recCategory" class="form-select">
+                        <option value="Музыка">Музыка</option>
+                        <option value="Учеба">Учеба</option>
+                        <option value="Траты">Траты</option>
+                        <option value="Прочее">Прочее</option>
                     </select>
-
                 </div>
-
-
                 <div class="form-group">
-
-                    <label class="form-label">
-                        Часы
-                    </label>
-
-                    <input
-                        type="number"
-                        step="0.25"
-                        min="0"
-                        id="recHours"
-                        class="form-input"
-                        placeholder="Например: 2.5"
-                    >
-
+                    <label class="form-label">Часы (если применимо)</label>
+                    <input type="number" step="0.5" id="recHours" class="form-input" placeholder="0">
                 </div>
-
-
                 <div class="form-group">
-
-                    <label class="form-label">
-                        Количество битов / задач
-                    </label>
-
-                    <input
-                        type="number"
-                        min="0"
-                        id="recCount"
-                        class="form-input"
-                        placeholder="Например: 2"
-                    >
-
+                    <label class="form-label">Сумма в рублях (если расход)</label>
+                    <input type="number" id="recMoney" class="form-input" placeholder="0">
                 </div>
-
-
-                <div class="form-group">
-
-                    <label class="form-label">
-                        Сумма расхода
-                    </label>
-
-                    <input
-                        type="number"
-                        min="0"
-                        id="recMoney"
-                        class="form-input"
-                        placeholder="Например: 500"
-                    >
-
-                </div>
-
-
                 <div class="modal-actions">
-
-                    <button
-                        type="button"
-                        class="btn-cancel"
-                        onclick="closeModal()"
-                    >
-
-                        Отмена
-
-                    </button>
-
-
-                    <button
-                        type="submit"
-                        class="btn-submit"
-                    >
-
-                        Добавить
-
-                    </button>
-
+                    <button type="button" class="btn-cancel" onclick="closeModal()">Отмена</button>
+                    <button type="submit" class="btn-submit">Добавить</button>
                 </div>
-
             </form>
-
         </div>
-
     </div>
 
-
-<script>
-
-/* =========================
-   DATA
-========================= */
-
-let currentTab = "today";
-
-
-let records =
-    JSON.parse(
-        localStorage.getItem("blackout_records")
-    ) || [];
-
-
-let goals =
-    JSON.parse(
-        localStorage.getItem("blackout_goals")
-    ) || {
-        "Музыка": 3,
-        "Учеба": 1,
-        "Спорт": 1
-    };
-
-
-let chatHistory =
-    JSON.parse(
-        localStorage.getItem("blackout_chat")
-    ) || [
-        {
-            sender: "ai",
-            text:
-                "💀 BLACKOUT AI MANAGER на связи.\n\nМожешь просто писать как обычно:\n«делал 2 бита 3 часа»\n«потратил 500 на еду»\n\nИли спросить:\n«что я делал сегодня?»"
-        }
-    ];
-
-
-/* =========================
-   HELPERS
-========================= */
-
-function getStartOfDay(date) {
-
-    const d = new Date(date);
-
-    d.setHours(
-        0,
-        0,
-        0,
-        0
-    );
-
-    return d;
-
-}
-
-
-function getStartOfWeek(date) {
-
-    const d =
-        getStartOfDay(date);
-
-    const day =
-        d.getDay();
-
-    const diff =
-        day === 0
-            ? -6
-            : 1 - day;
-
-    d.setDate(
-        d.getDate() + diff
-    );
-
-    return d;
-
-}
-
-
-function isSameDay(
-    date1,
-    date2
-) {
-
-    return (
-        getStartOfDay(date1).getTime()
-        ===
-        getStartOfDay(date2).getTime()
-    );
-
-}
-
-
-function formatNumber(value) {
-
-    return Number(value)
-        .toLocaleString("ru-RU");
-
-}
-
-
-function escapeHTML(text) {
-
-    const div =
-        document.createElement("div");
-
-    div.textContent = text;
-
-    return div.innerHTML;
-
-}
-
-
-function getCategoryIcon(category) {
-
-    const icons = {
-        "Музыка": "🎹",
-        "Учеба": "📚",
-        "Спорт": "🏋️",
-        "Траты": "💸",
-        "Прочее": "📌"
-    };
-
-    return icons[category] || "📌";
-
-}
-
-
-function saveData() {
-
-    localStorage.setItem(
-        "blackout_records",
-        JSON.stringify(records)
-    );
-
-}
-
-
-/* =========================
-   TABS
-========================= */
-
-function switchTab(
-    tab,
-    event
-) {
-
-    currentTab = tab;
-
-
-    document
-        .querySelectorAll(".tab")
-        .forEach(el => {
-
-            el.classList.remove("active");
-
-        });
-
-
-    event.target
-        .classList.add("active");
-
-
-    document
-        .getElementById("trackerMainView")
-        .style.display = "none";
-
-
-    document
-        .getElementById("weekView")
-        .style.display = "none";
-
-
-    document
-        .getElementById("chatContainer")
-        .classList.remove("active");
-
-
-    document
-        .getElementById("settingsView")
-        .style.display = "none";
-
-
-    const addBtn =
-        document.getElementById("mainAddBtn");
-
-
-    if (tab === "today") {
-
-        document
-            .getElementById("trackerMainView")
-            .style.display = "block";
-
-        addBtn.style.display = "block";
-
-        renderToday();
-
-    }
-
-
-    if (tab === "week") {
-
-        document
-            .getElementById("weekView")
-            .style.display = "block";
-
-        addBtn.style.display = "block";
-
-        renderWeek();
-
-    }
-
-
-    if (tab === "chat") {
-
-        document
-            .getElementById("chatContainer")
-            .classList.add("active");
-
-        addBtn.style.display = "none";
-
-        renderChat();
-
-    }
-
-
-    if (tab === "settings") {
-
-        document
-            .getElementById("settingsView")
-            .style.display = "block";
-
-        addBtn.style.display = "none";
-
-        loadGoals();
-
-    }
-
-}
-
-
-/* =========================
-   MODAL
-========================= */
-
-function openModal() {
-
-    document
-        .getElementById("recordModal")
-        .classList.add("active");
-
-}
-
-
-function closeModal() {
-
-    document
-        .getElementById("recordModal")
-        .classList.remove("active");
-
-
-    document
-        .getElementById("recordForm")
-        .reset();
-
-}
-
-
-function quickAdd(category) {
-
-    openModal();
-
-    document
-        .getElementById("recCategory")
-        .value = category;
-
-}
-
-
-/* =========================
-   RECORDS
-========================= */
-
-function saveRecord(event) {
-
-    event.preventDefault();
-
-
-    const title =
-        document
-            .getElementById("recTitle")
-            .value
-            .trim();
-
-
-    const category =
-        document
-            .getElementById("recCategory")
-            .value;
-
-
-    const hours =
-        parseFloat(
-            document
-                .getElementById("recHours")
-                .value
-        ) || 0;
-
-
-    const count =
-        parseInt(
-            document
-                .getElementById("recCount")
-                .value
-        ) || 0;
-
-
-    const money =
-        parseFloat(
-            document
-                .getElementById("recMoney")
-                .value
-        ) || 0;
-
-
-    const newRecord = {
-
-        id: Date.now(),
-
-        title,
-
-        category,
-
-        hours,
-
-        count,
-
-        money,
-
-        date:
-            new Date().toISOString()
-
-    };
-
-
-    records.unshift(newRecord);
-
-    saveData();
-
-    closeModal();
-
-    renderCurrentView();
-
-}
-
-
-function deleteRecord(id) {
-
-    records =
-        records.filter(
-            item => item.id !== id
-        );
-
-
-    saveData();
-
-    renderCurrentView();
-
-}
-
-
-function renderCurrentView() {
-
-    if (currentTab === "today") {
-        renderToday();
-    }
-
-    if (currentTab === "week") {
-        renderWeek();
-    }
-
-}
-
-
-/* =========================
-   STREAK
-========================= */
-
-function calculateStreak() {
-
-    if (records.length === 0) {
-        return 0;
-    }
-
-
-    const uniqueDays =
-        [...new Set(
-
-            records.map(item =>
-                getStartOfDay(
-                    new Date(item.date)
-                ).getTime()
-            )
-
-        )]
-        .sort((a, b) => b - a);
-
-
-    let streak = 0;
-
-    let checkDate =
-        getStartOfDay(
-            new Date()
-        );
-
-
-    const todayTime =
-        checkDate.getTime();
-
-
-    const hasToday =
-        uniqueDays.includes(todayTime);
-
-
-    if (!hasToday) {
-
-        checkDate.setDate(
-            checkDate.getDate() - 1
-        );
-
-    }
-
-
-    while (
-        uniqueDays.includes(
-            checkDate.getTime()
-        )
-    ) {
-
-        streak++;
-
-        checkDate.setDate(
-            checkDate.getDate() - 1
-        );
-
-    }
-
-
-    return streak;
-
-}
-
-
-/* =========================
-   TODAY
-========================= */
-
-function getTodayRecords() {
-
-    const now =
-        new Date();
-
-
-    return records.filter(item =>
-        isSameDay(
-            new Date(item.date),
-            now
-        )
-    );
-
-}
-
-
-function renderToday() {
-
-    const todayRecords =
-        getTodayRecords();
-
-
-    let totalHours = 0;
-    let totalMoney = 0;
-
-
-    todayRecords.forEach(item => {
-
-        totalHours += item.hours || 0;
-
-        totalMoney += item.money || 0;
-
-    });
-
-
-    document
-        .getElementById("totalHours")
-        .textContent =
-            totalHours + "ч";
-
-
-    document
-        .getElementById("totalMoney")
-        .textContent =
-            formatNumber(totalMoney)
-            + " ₽";
-
-
-    document
-        .getElementById("streakValue")
-        .textContent =
-            "🔥 "
-            + calculateStreak();
-
-
-    renderGoals(todayRecords);
-
-    renderCategoryStats(
-        todayRecords,
-        "categoryStats"
-    );
-
-    renderRecords(todayRecords);
-
-}
-
-
-function renderGoals(todayRecords) {
-
-    const container =
-        document.getElementById(
-            "goalsContainer"
-        );
-
-
-    container.innerHTML = "";
-
-
-    Object.entries(goals)
-        .forEach(([category, goal]) => {
-
-            let current = 0;
-
-
-            todayRecords
-                .filter(
-                    item =>
-                        item.category === category
-                )
-                .forEach(item => {
-
-                    current +=
-                        item.hours || 0;
-
-                });
-
-
-            const percent =
-                goal > 0
-                    ? Math.min(
-                        100,
-                        (current / goal) * 100
-                    )
-                    : 0;
-
-
-            const card =
-                document.createElement("div");
-
-            card.className =
-                "goal-card";
-
-
-            card.innerHTML = `
-
-                <div class="goal-top">
-
-                    <div class="goal-name">
-
-                        ${getCategoryIcon(category)}
-                        ${escapeHTML(category)}
-
-                    </div>
-
-                    <div class="goal-value">
-
-                        ${current} / ${goal}ч
-
-                    </div>
-
-                </div>
-
-                <div class="progress-bar">
-
-                    <div
-                        class="progress-fill"
-                        style="width:${percent}%"
-                    ></div>
-
-                </div>
-
-            `;
-
-
-            container.appendChild(card);
-
-        });
-
-}
-
-
-/* =========================
-   CATEGORY STATS
-========================= */
-
-function renderCategoryStats(
-    recordList,
-    containerId
-) {
-
-    const container =
-        document.getElementById(
-            containerId
-        );
-
-
-    const categories =
-        [
-            "Музыка",
-            "Учеба",
-            "Спорт",
-            "Траты",
-            "Прочее"
+    <script>
+        // Твой воркер на Cloudflare
+        const WORKER_URL = 'https://dark-credit-4079.floda486.workers.dev';
+
+        let currentTab = 'today';
+        let records = JSON.parse(localStorage.getItem('tracker_records')) || [];
+        let chatHistory = JSON.parse(localStorage.getItem('tracker_chat')) || [
+            { sender: 'ai', text: '💀 BLACKOUT AI MANAGER на связи. Накидывай темп, часы или расходы — разберу и запишу.' }
         ];
 
+        function switchTab(tab, event) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+            event.target.classList.add('active');
 
-    container.innerHTML = "";
+            const mainView = document.getElementById('trackerMainView');
+            const chatView = document.getElementById('chatContainer');
+            const addBtn = document.getElementById('mainAddBtn');
 
-
-    let hasData = false;
-
-
-    categories.forEach(category => {
-
-        let hours = 0;
-        let money = 0;
-        let count = 0;
-
-
-        recordList
-            .filter(
-                item =>
-                    item.category === category
-            )
-            .forEach(item => {
-
-                hours +=
-                    item.hours || 0;
-
-                money +=
-                    item.money || 0;
-
-                count +=
-                    item.count || 0;
-
-            });
-
-
-        if (
-            hours > 0 ||
-            money > 0 ||
-            count > 0
-        ) {
-
-            hasData = true;
-
-
-            const row =
-                document.createElement("div");
-
-
-            row.className =
-                "category-row";
-
-
-            let value = "";
-
-
-            if (hours > 0) {
-                value += hours + "ч ";
+            if (tab === 'chat') {
+                mainView.style.display = 'none';
+                chatView.classList.add('active');
+                addBtn.style.display = 'none';
+                renderChat();
+            } else {
+                mainView.style.display = 'block';
+                chatView.classList.remove('active');
+                addBtn.style.display = 'block';
+                render();
             }
-
-            if (count > 0) {
-                value += count + " шт. ";
-            }
-
-            if (money > 0) {
-                value +=
-                    formatNumber(money)
-                    + " ₽";
-            }
-
-
-            row.innerHTML = `
-
-                <div class="category-left">
-
-                    <span>
-                        ${getCategoryIcon(category)}
-                    </span>
-
-                    <span class="category-name">
-                        ${escapeHTML(category)}
-                    </span>
-
-                </div>
-
-                <div class="category-hours">
-                    ${value}
-                </div>
-
-            `;
-
-
-            container.appendChild(row);
-
         }
 
-    });
-
-
-    if (!hasData) {
-
-        container.innerHTML =
-            `
-            <div class="empty-state">
-                Пока статистики нет 💀
-            </div>
-            `;
-
-    }
-
-}
-
-
-/* =========================
-   RECORD LIST
-========================= */
-
-function renderRecords(recordList) {
-
-    const list =
-        document.getElementById(
-            "recordsList"
-        );
-
-
-    list.innerHTML = "";
-
-
-    if (
-        recordList.length === 0
-    ) {
-
-        list.innerHTML =
-            `
-            <div class="empty-state">
-                Пока нет записей.
-                Самое время что-то сделать 💀
-            </div>
-            `;
-
-        return;
-
-    }
-
-
-    recordList
-        .slice(0, 30)
-        .forEach(item => {
-
-            const record =
-                document.createElement("div");
-
-
-            record.className =
-                "record-item";
-
-
-            const date =
-                new Date(item.date)
-                .toLocaleTimeString(
-                    "ru-RU",
-                    {
-                        hour: "2-digit",
-                        minute: "2-digit"
-                    }
-                );
-
-
-            const metrics = [];
-
-
-            if (item.hours) {
-                metrics.push(
-                    item.hours + "ч"
-                );
-            }
-
-
-            if (item.count) {
-                metrics.push(
-                    item.count + " шт."
-                );
-            }
-
-
-            if (item.money) {
-                metrics.push(
-                    formatNumber(item.money)
-                    + " ₽"
-                );
-            }
-
-
-            record.innerHTML = `
-
-                <div class="record-info">
-
-                    <div class="record-title"></div>
-
-                    <div class="record-meta">
-
-                        <div class="record-category">
-
-                            ${getCategoryIcon(item.category)}
-                            ${escapeHTML(item.category)}
-
-                        </div>
-
-                        <div class="record-date">
-
-                            ${date}
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="record-right">
-
-                    <div class="record-metric">
-
-                        ${metrics.join("<br>")}
-
-                    </div>
-
-
-                    <button
-                        class="delete-btn"
-                    >
-                        ×
-                    </button>
-
-                </div>
-
-            `;
-
-
-            record
-                .querySelector(".record-title")
-                .textContent =
-                    item.title;
-
-
-            record
-                .querySelector(".delete-btn")
-                .onclick =
-                    () =>
-                        deleteRecord(item.id);
-
-
-            list.appendChild(record);
-
-        });
-
-}
-
-
-/* =========================
-   WEEK
-========================= */
-
-function getWeekRecords(
-    weekOffset = 0
-) {
-
-    const now =
-        new Date();
-
-
-    const start =
-        getStartOfWeek(now);
-
-
-    start.setDate(
-        start.getDate()
-        + weekOffset * 7
-    );
-
-
-    const end =
-        new Date(start);
-
-
-    end.setDate(
-        end.getDate() + 7
-    );
-
-
-    return records.filter(item => {
-
-        const date =
-            new Date(item.date);
-
-
-        return (
-            date >= start &&
-            date < end
-        );
-
-    });
-
-}
-
-
-function renderWeek() {
-
-    const currentWeek =
-        getWeekRecords(0);
-
-
-    const previousWeek =
-        getWeekRecords(-1);
-
-
-    let currentHours = 0;
-    let currentMoney = 0;
-    let previousHours = 0;
-
-
-    currentWeek.forEach(item => {
-
-        currentHours +=
-            item.hours || 0;
-
-        currentMoney +=
-            item.money || 0;
-
-    });
-
-
-    previousWeek.forEach(item => {
-
-        previousHours +=
-            item.hours || 0;
-
-    });
-
-
-    const difference =
-        currentHours
-        - previousHours;
-
-
-    document
-        .getElementById("weekHours")
-        .textContent =
-            currentHours + "ч";
-
-
-    document
-        .getElementById("weekMoney")
-        .textContent =
-            formatNumber(currentMoney)
-            + " ₽";
-
-
-    document
-        .getElementById("previousWeekHours")
-        .textContent =
-            previousHours + "ч";
-
-
-    document
-        .getElementById("weekDifference")
-        .textContent =
-            (
-                difference > 0
-                    ? "+"
-                    : ""
-            )
-            + difference
-            + "ч";
-
-
-    renderWeekChart(currentWeek);
-
-
-    renderCategoryStats(
-        currentWeek,
-        "weekCategoryStats"
-    );
-
-}
-
-
-function renderWeekChart(
-    weekRecords
-) {
-
-    const chart =
-        document.getElementById(
-            "weekChart"
-        );
-
-
-    chart.innerHTML = "";
-
-
-    const start =
-        getStartOfWeek(
-            new Date()
-        );
-
-
-    const labels =
-        [
-            "Пн",
-            "Вт",
-            "Ср",
-            "Чт",
-            "Пт",
-            "Сб",
-            "Вс"
-        ];
-
-
-    const dayHours = [];
-
-
-    for (
-        let i = 0;
-        i < 7;
-        i++
-    ) {
-
-        const day =
-            new Date(start);
-
-        day.setDate(
-            start.getDate() + i
-        );
-
-
-        let hours = 0;
-
-
-        weekRecords
-            .filter(item =>
-                isSameDay(
-                    new Date(item.date),
-                    day
-                )
-            )
-            .forEach(item => {
-
-                hours +=
-                    item.hours || 0;
-
-            });
-
-
-        dayHours.push(hours);
-
-    }
-
-
-    const max =
-        Math.max(
-            ...dayHours,
-            1
-        );
-
-
-    dayHours
-        .forEach(
-            (hours, index) => {
-
-                const percent =
-                    (hours / max)
-                    * 100;
-
-
-                const day =
-                    document.createElement("div");
-
-
-                day.className =
-                    "chart-day";
-
-
-                day.innerHTML = `
-
-                    <div class="bar-value">
-                        ${hours}ч
-                    </div>
-
-                    <div class="bar-wrapper">
-
-                        <div
-                            class="bar"
-                            style="
-                                height:
-                                ${Math.max(
-                                    percent,
-                                    hours > 0 ? 4 : 0
-                                )}%
-                            "
-                        ></div>
-
-                    </div>
-
-                    <div class="bar-label">
-
-                        ${labels[index]}
-
-                    </div>
-
-                `;
-
-
-                chart.appendChild(day);
-
-            }
-        );
-
-}
-
-
-/* =========================
-   GOALS
-========================= */
-
-function loadGoals() {
-
-    document
-        .getElementById("goalMusic")
-        .value =
-            goals["Музыка"] || 0;
-
-
-    document
-        .getElementById("goalStudy")
-        .value =
-            goals["Учеба"] || 0;
-
-
-    document
-        .getElementById("goalSport")
-        .value =
-            goals["Спорт"] || 0;
-
-}
-
-
-function saveGoals() {
-
-    goals = {
-
-        "Музыка":
-            parseFloat(
-                document
-                    .getElementById("goalMusic")
-                    .value
-            ) || 0,
-
-
-        "Учеба":
-            parseFloat(
-                document
-                    .getElementById("goalStudy")
-                    .value
-            ) || 0,
-
-
-        "Спорт":
-            parseFloat(
-                document
-                    .getElementById("goalSport")
-                    .value
-            ) || 0
-
-    };
-
-
-    localStorage.setItem(
-        "blackout_goals",
-        JSON.stringify(goals)
-    );
-
-
-    alert(
-        "💀 Цели сохранены"
-    );
-
-}
-
-
-/* =========================
-   CHAT PARSER
-========================= */
-
-const numberWords = {
-
-    "один": 1,
-    "одна": 1,
-
-    "два": 2,
-    "две": 2,
-
-    "три": 3,
-    "четыре": 4,
-    "пять": 5,
-    "шесть": 6,
-    "семь": 7,
-    "восемь": 8,
-    "девять": 9,
-    "десять": 10,
-
-    "полтора": 1.5,
-
-    "половину": 0.5,
-    "полчаса": 0.5
-
-};
-
-
-function parseInputText(rawText) {
-
-    const text =
-        rawText.toLowerCase();
-
-
-    let hours = 0;
-    let money = 0;
-    let count = 0;
-
-    let category =
-        "Прочее";
-
-
-    /* HOURS */
-
-    const hourMatch =
-        text.match(
-            /(\d+[\.,]?\d*)\s*(ч|час|часа|часов)/i
-        );
-
-
-    if (hourMatch) {
-
-        hours =
-            parseFloat(
-                hourMatch[1]
-                    .replace(",", ".")
-            );
-
-    } else {
-
-        for (
-            const word in numberWords
-        ) {
-
-            const regex =
-                new RegExp(
-                    word
-                    + "\\s*(ч|час|часа|часов)",
-                    "i"
-                );
-
-
-            if (
-                regex.test(text)
-            ) {
-
-                hours =
-                    numberWords[word];
-
-                break;
-
-            }
-
+        function openModal() {
+            document.getElementById('recordModal').classList.add('active');
         }
 
-    }
-
-
-    /* MONEY */
-
-    const moneyMatch =
-        text.match(
-            /(\d+[\.,]?\d*)\s*(к|тыс|тысяч|р|руб|рублей|₽)/i
-        );
-
-
-    if (moneyMatch) {
-
-        let value =
-            parseFloat(
-                moneyMatch[1]
-                    .replace(",", ".")
-            );
-
-
-        const unit =
-            moneyMatch[2]
-                .toLowerCase();
-
-
-        if (
-            unit === "к"
-            ||
-            unit.startsWith("тыс")
-        ) {
-
-            value *= 1000;
-
+        function closeModal() {
+            document.getElementById('recordModal').classList.remove('active');
+            document.getElementById('recordForm').reset();
         }
 
-
-        money = value;
-
-    }
-
-
-    /* COUNT */
-
-    const countMatch =
-        text.match(
-            /(\d+)\s*(бит|бита|битов|трек|трека|треков|рилс|рилса|рилсов|видео)/i
-        );
-
-
-    if (countMatch) {
-
-        count =
-            parseInt(
-                countMatch[1]
-            );
-
-    }
-
-
-    /* CATEGORY */
-
-    if (
-
-        text.includes("бит")
-        ||
-        text.includes("fl")
-        ||
-        text.includes("фл")
-        ||
-        text.includes("музык")
-        ||
-        text.includes("трек")
-        ||
-        text.includes("свод")
-        ||
-        text.includes("сведение")
-        ||
-        text.includes("луп")
-        ||
-        text.includes("мастер")
-
-    ) {
-
-        category =
-            "Музыка";
-
-    }
-
-
-    else if (
-
-        text.includes("учеб")
-        ||
-        text.includes("огэ")
-        ||
-        text.includes("урок")
-        ||
-        text.includes("домаш")
-        ||
-        text.includes("книг")
-        ||
-        text.includes("матем")
-        ||
-        text.includes("англ")
-
-    ) {
-
-        category =
-            "Учеба";
-
-    }
-
-
-    else if (
-
-        text.includes("спорт")
-        ||
-        text.includes("зал")
-        ||
-        text.includes("тренир")
-        ||
-        text.includes("отжим")
-        ||
-        text.includes("бег")
-        ||
-        text.includes("кардио")
-
-    ) {
-
-        category =
-            "Спорт";
-
-    }
-
-
-    else if (
-
-        money > 0
-        ||
-        text.includes("купил")
-        ||
-        text.includes("еда")
-        ||
-        text.includes("шаурм")
-        ||
-        text.includes("кофе")
-        ||
-        text.includes("магазин")
-        ||
-        text.includes("кафе")
-        ||
-        text.includes("доставк")
-
-    ) {
-
-        category =
-            "Траты";
-
-    }
-
-
-    return {
-
-        hours,
-
-        money,
-
-        count,
-
-        category
-
-    };
-
-}
-
-
-/* =========================
-   CHAT ANALYTICS
-========================= */
-
-function getTodaySummary() {
-
-    const list =
-        getTodayRecords();
-
-
-    let hours = 0;
-    let money = 0;
-    let count = 0;
-
-
-    list.forEach(item => {
-
-        hours +=
-            item.hours || 0;
-
-        money +=
-            item.money || 0;
-
-        count +=
-            item.count || 0;
-
-    });
-
-
-    if (
-        list.length === 0
-    ) {
-
-        return "💀 Сегодня пока пусто. Пора начинать.";
-
-    }
-
-
-    return `💀 Сегодня:
-
-⏱ ${hours}ч активности
-💸 ${formatNumber(money)} ₽ расходов
-🎯 ${count} задач / битов
-
-${hours >= 3
-    ? "Неплохо двигаешься."
-    : "Темп можно ещё разогнать."
-}`;
-
-}
-
-
-function getWeekSummary() {
-
-    const list =
-        getWeekRecords(0);
-
-
-    let hours = 0;
-    let money = 0;
-
-
-    list.forEach(item => {
-
-        hours +=
-            item.hours || 0;
-
-        money +=
-            item.money || 0;
-
-    });
-
-
-    return `💀 За эту неделю:
-
-⏱ ${hours}ч работы
-💸 ${formatNumber(money)} ₽ расходов
-🔥 Серия: ${calculateStreak()} дней`;
-
-}
-
-
-/* =========================
-   CHAT
-========================= */
-
-function handleChatMessage() {
-
-    const input =
-        document.getElementById(
-            "chatInput"
-        );
-
-
-    const rawText =
-        input.value.trim();
-
-
-    if (!rawText) {
-        return;
-    }
-
-
-    chatHistory.push({
-
-        sender: "user",
-
-        text: rawText
-
-    });
-
-
-    input.value = "";
-
-
-    renderChat();
-
-
-    const text =
-        rawText.toLowerCase();
-
-
-    let reply = "";
-
-
-    /* QUESTIONS */
-
-    if (
-
-        text.includes("что я делал сегодня")
-        ||
-        text.includes("что сегодня")
-
-    ) {
-
-        reply =
-            getTodaySummary();
-
-    }
-
-
-    else if (
-
-        text.includes("что я делал за неделю")
-        ||
-        text.includes("за неделю")
-        ||
-        text.includes("статистика недели")
-
-    ) {
-
-        reply =
-            getWeekSummary();
-
-    }
-
-
-    else if (
-
-        text.includes("сколько музыки")
-
-    ) {
-
-        const list =
-            getWeekRecords(0);
-
-
-        const musicHours =
-            list
-                .filter(
-                    item =>
-                        item.category === "Музыка"
-                )
-                .reduce(
-                    (sum, item) =>
-                        sum + (item.hours || 0),
-                    0
-                );
-
-
-        reply =
-            `💀 За эту неделю музыке уделено ${musicHours}ч.`;
-
-    }
-
-
-    else if (
-
-        text.includes("что мне делать")
-        ||
-        text.includes("что делать сейчас")
-
-    ) {
-
-        const today =
-            getTodayRecords();
-
-
-        const musicHours =
-            today
-                .filter(
-                    item =>
-                        item.category === "Музыка"
-                )
-                .reduce(
-                    (sum, item) =>
-                        sum + (item.hours || 0),
-                    0
-                );
-
-
-        const goal =
-            goals["Музыка"] || 0;
-
-
-        if (
-            musicHours < goal
-        ) {
-
-            reply =
-                `💀 До музыкальной цели осталось ${Math.max(
-                    0,
-                    goal - musicHours
-                )}ч.
-
-Я бы сейчас сделал ещё одну нормальную бит-сессию и закрыл дневной минимум.`;
-
-        }
-
-        else {
-
-            reply =
-                `💀 Музыкальная цель уже закрыта.
-
-Можно либо сделать ещё одну короткую сессию, либо заняться чем-то другим без чувства, что ты сегодня нихуя не сделал.`;
-
-        }
-
-    }
-
-
-    else {
-
-        const parsed =
-            parseInputText(rawText);
-
-
-        const hasData =
-            parsed.hours > 0
-            ||
-            parsed.money > 0
-            ||
-            parsed.count > 0;
-
-
-        if (hasData) {
+        function saveRecord(e) {
+            e.preventDefault();
+            const title = document.getElementById('recTitle').value;
+            const category = document.getElementById('recCategory').value;
+            const hours = parseFloat(document.getElementById('recHours').value) || 0;
+            const money = parseFloat(document.getElementById('recMoney').value) || 0;
 
             const newRecord = {
-
                 id: Date.now(),
-
-                title: rawText,
-
-                category:
-                    parsed.category,
-
-                hours:
-                    parsed.hours,
-
-                money:
-                    parsed.money,
-
-                count:
-                    parsed.count,
-
-                date:
-                    new Date().toISOString()
-
+                title,
+                category,
+                hours,
+                money,
+                date: new Date().toISOString()
             };
 
+            records.unshift(newRecord);
+            localStorage.setItem('tracker_records', JSON.stringify(records));
 
-            records.unshift(
-                newRecord
-            );
+            closeModal();
+            render();
+        }
 
+        function deleteRecord(id) {
+            records = records.filter(item => item.id !== id);
+            localStorage.setItem('tracker_records', JSON.stringify(records));
+            render();
+        }
 
-            saveData();
+        async function handleChatMessage() {
+            const inputField = document.getElementById('chatInput');
+            const rawText = inputField.value.trim();
+            if (!rawText) return;
 
+            chatHistory.push({ sender: 'user', text: rawText });
+            inputField.value = '';
+            renderChat();
 
-            const parts = [];
+            const loadingIndex = chatHistory.length;
+            chatHistory.push({ sender: 'ai', text: '💀 Думает...' });
+            renderChat();
 
+            try {
+                // Собираем статистику для отправки в ИИ
+                let musicH = 0, studyH = 0, sportH = 0, otherH = 0, totalM = 0;
+                records.forEach(item => {
+                    if (item.category === 'Музыка') musicH += item.hours;
+                    else if (item.category === 'Учеба') studyH += item.hours;
+                    else otherH += item.hours;
+                    totalM += item.money;
+                });
 
-            if (
-                parsed.hours > 0
-            ) {
+                const response = await fetch(WORKER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: rawText,
+                        tracker: {
+                            today: { musicHours: musicH, studyHours: studyH, otherHours: otherH, money: totalM },
+                            goals: { music: 3, study: 2, sport: 1 },
+                            streak: 5,
+                            week: { hours: musicH + studyH + otherH, money: totalM },
+                            recentRecords: records.slice(0, 5)
+                        },
+                        history: chatHistory.slice(0, -2)
+                    })
+                });
 
-                parts.push(
-                    `${parsed.hours}ч`
-                );
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Ошибка запроса');
+                }
 
+                chatHistory[loadingIndex] = { sender: 'ai', text: data.reply };
+            } catch (err) {
+                chatHistory[loadingIndex] = { sender: 'ai', text: `💀 Ошибка: ${err.message}` };
             }
 
+            localStorage.setItem('tracker_chat', JSON.stringify(chatHistory));
+            renderChat();
+        }
 
-            if (
-                parsed.count > 0
-            ) {
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatSendBtn = document.getElementById('chatSendBtn');
+            const chatInput = document.getElementById('chatInput');
 
-                parts.push(
-                    `${parsed.count} шт.`
-                );
-
+            if (chatSendBtn) {
+                chatSendBtn.addEventListener('click', handleChatMessage);
+                chatInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') handleChatMessage();
+                });
             }
-
-
-            if (
-                parsed.money > 0
-            ) {
-
-                parts.push(
-                    `${formatNumber(parsed.money)} ₽`
-                );
-
-            }
-
-
-            reply =
-                `💀 Зафиксировано: ${parts.join(", ")}.
-
-Категория: «${parsed.category}».
-
-База в системе.`;
-
-        }
-
-
-        else if (
-
-            text.includes("привет")
-            ||
-            text.includes("здаров")
-            ||
-            text.includes("здравствуйте")
-            ||
-            text.includes("хай")
-
-        ) {
-
-            reply =
-                "💀 Здарово. Я BLACKOUT AI MANAGER.\n\nМожешь просто написать, что делал — я попробую сам всё распознать.";
-
-        }
-
-
-        else if (
-
-            text.includes("спасибо")
-            ||
-            text.includes("спс")
-
-        ) {
-
-            reply =
-                "💀 На связи.";
-
-        }
-
-
-        else {
-
-            reply =
-                "💀 Не совсем понял, что с этим делать.\n\nМожешь:\n• добавить активность — «делал бит 2 часа»\n• добавить расход — «потратил 500 на еду»\n• спросить статистику — «что я делал сегодня?»";
-
-        }
-
-    }
-
-
-    setTimeout(() => {
-
-        chatHistory.push({
-
-            sender: "ai",
-
-            text: reply
-
+            render();
         });
 
+        function renderChat() {
+            const messagesContainer = document.getElementById('chatMessages');
+            messagesContainer.innerHTML = chatHistory.map(msg => `
+                <div class="chat-bubble ${msg.sender}">${msg.text}</div>
+            `).join('');
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
 
-        localStorage.setItem(
-            "blackout_chat",
-            JSON.stringify(chatHistory)
-        );
+        function render() {
+            const listEl = document.getElementById('recordsList');
+            const totalHoursEl = document.getElementById('totalHours');
+            const totalMoneyEl = document.getElementById('totalMoney');
 
+            const now = new Date();
+            const filteredRecords = records.filter(item => {
+                const itemDate = new Date(item.date);
+                if (currentTab === 'today') {
+                    return itemDate.toDateString() === now.toDateString();
+                } else {
+                    const diffTime = Math.abs(now - itemDate);
+                    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+                    return diffDays <= 7;
+                }
+            });
 
-        renderChat();
+            let totalH = 0;
+            let totalM = 0;
 
-        renderCurrentView();
+            filteredRecords.forEach(item => {
+                totalH += item.hours;
+                totalM += item.money;
+            });
 
-    }, 250);
+            totalHoursEl.textContent = totalH + 'ч';
+            totalMoneyEl.textContent = totalM.toLocaleString('ru-RU') + ' ₽';
 
-}
-
-
-/* =========================
-   CHAT RENDER
-========================= */
-
-function renderChat() {
-
-    const container =
-        document.getElementById(
-            "chatMessages"
-        );
-
-
-    container.innerHTML = "";
-
-
-    chatHistory.forEach(msg => {
-
-        const bubble =
-            document.createElement("div");
-
-
-        bubble.className =
-            `chat-bubble ${msg.sender}`;
-
-
-        bubble.textContent =
-            msg.text;
-
-
-        container.appendChild(
-            bubble
-        );
-
-    });
-
-
-    container.scrollTop =
-        container.scrollHeight;
-
-}
-
-
-/* =========================
-   EVENTS
-========================= */
-
-document
-    .getElementById("chatSendBtn")
-    .addEventListener(
-        "click",
-        handleChatMessage
-    );
-
-
-document
-    .getElementById("chatInput")
-    .addEventListener(
-        "keydown",
-        event => {
-
-            if (
-                event.key === "Enter"
-            ) {
-
-                handleChatMessage();
-
+            if (filteredRecords.length === 0) {
+                listEl.innerHTML = '<div class="empty-state">Пока нет записей</div>';
+                return;
             }
 
+            listEl.innerHTML = filteredRecords.map(item => `
+                <div class="record-item">
+                    <div class="record-info">
+                        <div class="record-title">${item.title}</div>
+                        <div class="record-category">${item.category}</div>
+                    </div>
+                    <div class="record-right">
+                        <div class="record-metric">
+                            ${item.hours ? item.hours + 'ч' : ''} 
+                            ${item.money ? item.money.toLocaleString('ru-RU') + ' ₽' : ''}
+                        </div>
+                        <button class="delete-btn" onclick="deleteRecord(${item.id})">&times;</button>
+                    </div>
+                </div>
+            `).join('');
         }
-    );
-
-
-/* =========================
-   INIT
-========================= */
-
-renderToday();
-
-</script>
-
+    </script>
 </body>
 </html>
