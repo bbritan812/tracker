@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#221b15">
+<title>КЕДР — мужской барбершоп</title>
+<meta name="description" content="КЕДР — концепция сайта мужского барбершопа. Стрижки, борода и уход.">
+<style>
+:root{--bg:#f6f1ea;--surface:#fffaf3;--text:#1e1a16;--muted:#756b60;--accent:#9a5b2c;--accent-soft:#ead9c6;--on-accent:#fff;--line:#e0d6c8;--hero:#221b15;--hero2:#3a2a1c;--hero-text:#f6f1ea;--shadow:0 18px 50px #38251612;color-scheme:light}
+:root[data-theme="dark"]{--bg:#15110d;--surface:#211a14;--text:#f1e9de;--muted:#afa293;--accent:#d08a4e;--accent-soft:#3c2a1c;--on-accent:#1a120b;--line:#3b3025;--hero:#0e0b08;--hero2:#2a1d12;--hero-text:#f1e9de;--shadow:0 18px 50px #0005;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times New Roman",serif;line-height:1.6;transition:background .25s,color .25s}
+body:before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--hero);z-index:40}
+a{color:inherit}
+button,input,select{font:inherit}
+button,a{-webkit-tap-highlight-color:transparent}
+h1,h2,h3,.sans,button,label,nav{font-family:"Trebuchet MS",Arial,sans-serif}
+h1,h2,h3,p{margin-top:0}
+h1,h2,h3{letter-spacing:.025em}
+.wrap{width:min(100% - 40px,960px);margin-inline:auto}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--hero);color:var(--hero-text);border-bottom:1px solid #ffffff16}
+.header-inner{width:min(100% - 40px,1160px);margin:auto;min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.logo{font-family:"Trebuchet MS",Arial,sans-serif;font-weight:800;font-size:1.3rem;text-decoration:none;letter-spacing:.1em;white-space:nowrap}
+.logo span{color:var(--accent)}
+nav{display:flex;align-items:center;gap:clamp(10px,2vw,24px);font-size:.87rem}
+nav a{text-decoration:none;opacity:.82;transition:opacity .2s,color .2s}
+nav a:hover{opacity:1;color:var(--accent)}
+.theme{width:38px;height:38px;border-radius:50%;border:1px solid #ffffff55;background:transparent;color:inherit;cursor:pointer;font-size:1rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;background:var(--accent);color:var(--on-accent);padding:13px 24px;border-radius:5px;text-decoration:none;font-weight:700;border:1px solid var(--accent);cursor:pointer;font-size:.92rem;transition:transform .2s,filter .2s}
+.btn:hover{filter:brightness(1.08);transform:translateY(-2px)}
+.btn.outline{background:transparent;border-color:#ffffff70;color:var(--hero-text)}
+.hero{position:relative;overflow:hidden;background:radial-gradient(ellipse at 78% 15%,#9a5b2c55,transparent 44%),linear-gradient(135deg,var(--hero),var(--hero2));color:var(--hero-text);padding:clamp(78px,10vw,120px) 20px 112px;text-align:center}
+.hero:after{content:"";position:absolute;width:460px;height:460px;border:1px solid #ffffff0d;border-radius:50%;right:-210px;bottom:-290px;box-shadow:0 0 0 45px #ffffff06,0 0 0 90px #ffffff04;pointer-events:none}
+.tag{display:inline-flex;align-items:center;gap:9px;border:1px solid #d08a4e88;color:#dba16d;padding:5px 14px;border-radius:99px;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;margin-bottom:22px}
+.tag:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.hero h1{font-size:clamp(2.45rem,7vw,4.6rem);line-height:1.06;margin:0 auto 20px;max-width:850px;font-weight:800}
+.hero p{max-width:560px;margin:0 auto 30px;color:#f6f1eaC9;font-size:clamp(1rem,2vw,1.12rem)}
+.hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);max-width:960px;margin:-42px auto 0;position:relative;z-index:2;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px 16px;text-align:center;gap:12px;width:calc(100% - 40px);box-shadow:var(--shadow)}
+.stats b{display:block;font-family:"Trebuchet MS",Arial,sans-serif;font-size:1.6rem;color:var(--accent);line-height:1.2}
+.stats span{color:var(--muted);font-size:.86rem}
+section{padding:76px 0 12px;max-width:960px;margin:0 auto}
+.section-title{font-size:clamp(1.65rem,4vw,2rem);margin-bottom:6px}
+.sub{color:var(--muted);margin:0 0 28px;font-size:.98rem}
+.prices{list-style:none;padding:0;margin:0}
+.prices li{display:flex;align-items:baseline;gap:12px;padding:15px 0;border-bottom:1px solid var(--line)}
+.prices li>div:first-child{max-width:75%}
+.prices .d{flex:1;border-bottom:2px dotted var(--line);transform:translateY(-4px);min-width:20px}
+.prices small{display:block;color:var(--muted);font-size:.84rem}
+.prices b{font-family:"Trebuchet MS",Arial,sans-serif;white-space:nowrap;font-size:.98rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px;box-shadow:var(--shadow)}
+.team .card{text-align:center;padding:27px 20px}
+.ava{width:74px;height:74px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:1rem;font-weight:800;margin:0 auto 14px;font-family:"Trebuchet MS",Arial,sans-serif;letter-spacing:.08em;border:1px solid var(--line)}
+.card h3{font-size:1.08rem;margin:0 0 6px}
+.card p{margin:0;color:var(--muted);font-size:.92rem}
+.pill{display:inline-block;margin-top:14px;color:var(--accent);font-family:"Trebuchet MS",Arial,sans-serif;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase}
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.gal-item{aspect-ratio:1.15;border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#fff;font-family:"Trebuchet MS",Arial,sans-serif;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;overflow:hidden;position:relative;isolation:isolate}
+.gal-item:after{content:"";position:absolute;inset:0;background:linear-gradient(145deg,#0000,#0005);z-index:-1}
+.gal-item i{font-style:normal;font-size:2.25rem}
+.g1{background:radial-gradient(circle at 30% 20%,#c18a5d,transparent 38%),linear-gradient(135deg,#51331f,#a87547)}
+.g2{background:radial-gradient(circle at 70% 25%,#78909a,transparent 42%),linear-gradient(135deg,#1f2a30,#506a75)}
+.g3{background:radial-gradient(circle at 25% 25%,#bd7770,transparent 40%),linear-gradient(135deg,#3d2a2a,#915b52)}
+.g4{background:radial-gradient(circle at 70% 30%,#9eaa6a,transparent 38%),linear-gradient(135deg,#2c3a22,#71834d)}
+.g5{background:radial-gradient(circle at 30% 25%,#9776b0,transparent 38%),linear-gradient(135deg,#2a2030,#72548a)}
+.g6{background:radial-gradient(circle at 70% 25%,#d2b678,transparent 38%),linear-gradient(135deg,#30261a,#9a7b46)}
+.note{background:var(--accent-soft);border:1px solid var(--line);border-radius:10px;padding:15px 18px;color:var(--muted);font-size:.88rem}
+.visit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.visit{padding:23px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.visit strong{display:block;font:800 1.55rem "Trebuchet MS",Arial,sans-serif;color:var(--accent);margin-bottom:10px}
+.visit h3{font-size:1rem;margin:0 0 6px}
+.visit p{font-size:.9rem;color:var(--muted);margin:0}
+.book{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:clamp(20px,4vw,30px);box-shadow:var(--shadow)}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:18px}
+label{display:block;font-size:.83rem;color:var(--muted);margin-bottom:6px}
+input,select{width:100%;padding:12px 13px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--text);outline:none}
+input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+#form-status{display:none;margin-top:16px;padding:14px;border-radius:8px;border:1px solid var(--accent);color:var(--text);font-size:.9rem}
+details{border-bottom:1px solid var(--line);padding:15px 0}
+summary{cursor:pointer;font-family:"Trebuchet MS",Arial,sans-serif;font-weight:700;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary:after{content:"+";color:var(--accent);font-size:1.2rem}
+details[open] summary:after{content:"−"}
+details p{margin:10px 0 0;color:var(--muted);font-size:.94rem;max-width:780px}
+.contacts{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.contacts h3{font-size:.9rem;color:var(--accent);margin:0 0 6px}
+.contacts p{margin:0;font-size:.95rem}
+.map{margin-top:24px;min-height:150px;border-radius:12px;border:1px dashed var(--line);background:repeating-linear-gradient(45deg,var(--surface),var(--surface) 14px,var(--bg) 14px,var(--bg) 28px);display:grid;place-items:center;color:var(--muted);font-family:"Trebuchet MS",Arial,sans-serif;font-size:.85rem;text-align:center;padding:18px}
+footer{text-align:center;color:var(--muted);padding:38px 20px calc(38px + env(safe-area-inset-bottom,0px));margin-top:55px;border-top:1px solid var(--line);font-size:.86rem}
+footer strong{display:block;color:var(--text);font-family:"Trebuchet MS",Arial,sans-serif;letter-spacing:.12em;margin-bottom:8px}
+footer small{display:block;max-width:700px;margin:12px auto 0;font-size:.75rem;line-height:1.6}
+.mobile-bar{display:none}
+.js .rv{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease}
+.js .rv.in{opacity:1;transform:none}
+@media(max-width:760px){nav a.nav-link{display:none}.header-inner{min-height:62px}.hero{padding:76px 18px 88px}.stats{grid-template-columns:repeat(2,1fr);padding:17px 12px}.gal{grid-template-columns:repeat(2,1fr)}.visit-grid{grid-template-columns:1fr}.contacts{grid-template-columns:1fr 1fr}.mobile-bar{display:block;position:fixed;left:0;right:0;bottom:0;z-index:30;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:var(--hero)}.mobile-bar .btn{display:flex;width:100%;text-align:center}}
+@media(max-width:480px){.wrap{width:calc(100% - 32px)}.fields{grid-template-columns:1fr}.contacts{grid-template-columns:1fr}.prices li{gap:8px}.prices li>div:first-child{max-width:68%}.prices b{font-size:.9rem}.card{padding:19px}.section-title{font-size:1.7rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.js .rv{opacity:1;transform:none;transition:none}.btn:hover{transform:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a class="logo" href="#top" aria-label="КЕДР — на главную">КЕДР<span>.</span></a>
+    <nav aria-label="Основная навигация">
+      <a class="nav-link" href="#services">Услуги</a><a class="nav-link" href="#team">Мастера</a><a class="nav-link" href="#work">Работы</a><a class="nav-link" href="#faq">Вопросы</a><a class="nav-link" href="#contacts">Контакты</a>
+      <button class="theme" id="themeToggle" type="button" aria-label="Переключить тему" aria-pressed="false">◐</button>
+      <a class="btn" href="#book" style="padding:9px 16px">Записаться</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="hero" id="top">
+  <span class="tag">Мужской барбершоп</span>
+  <h1>Стрижка, которая<br>держит форму</h1>
+  <p>Чёткие линии, внимание к деталям и спокойная атмосфера. Подберём форму, которая подходит именно вам.</p>
+  <div class="hero-actions"><a class="btn" href="#book">Записаться онлайн</a><a class="btn outline" href="#services">Посмотреть услуги</a></div>
+</div>
+
+<div class="stats rv" aria-label="Основные направления">
+  <div><b>01</b><span>Мужские стрижки</span></div>
+  <div><b>02</b><span>Борода и усы</span></div>
+  <div><b>03</b><span>Бритьё</span></div>
+  <div><b>04</b><span>Укладка и уход</span></div>
+</div>
+
+<section id="services" class="rv">
+  <div class="wrap">
+    <h2 class="section-title">Услуги и цены</h2>
+    <p class="sub">Основные услуги барбершопа. Итоговая стоимость зависит от прайса конкретного заведения.</p>
+    <ul class="prices">
+      <li><div>Мужская стрижка<small>Ножницы и машинка · около 60 минут</small></div><span class="d"></span><b>2 000 ₽</b></li>
+      <li><div>Стрижка машинкой<small>Одна или несколько насадок · около 30 минут</small></div><span class="d"></span><b>1 400 ₽</b></li>
+      <li><div>Моделирование бороды<small>Форма, контур и уход</small></div><span class="d"></span><b>1 500 ₽</b></li>
+      <li><div>Королевское бритьё<small>Опасная бритва и горячее полотенце</small></div><span class="d"></span><b>1 800 ₽</b></li>
+      <li><div>Комплекс «КЕДР»<small>Стрижка и моделирование бороды</small></div><span class="d"></span><b>3 200 ₽</b></li>
+      <li><div>Отец + сын<small>Совместный визит</small></div><span class="d"></span><b>3 000 ₽</b></li>
+    </ul>
+    <p class="note" style="margin-top:20px">Прайс демонстрационный. Перед запуском сайта заменим услуги, длительность и стоимость на актуальные данные барбершопа.</p>
+  </div>
+</section>
+
+<section id="team" class="team rv">
+  <div class="wrap">
+    <h2 class="section-title">Мастера</h2>
+    <p class="sub">Разные специализации — единое внимание к качеству работы.</p>
+    <div class="grid">
+      <article class="card"><div class="ava">01</div><h3>Классические стрижки</h3><p>Форма, пропорции и аккуратные переходы. Для тех, кто ценит сдержанный стиль.</p><span class="pill">Стрижка · Fade</span></article>
+      <article class="card"><div class="ava">02</div><h3>Борода и бритьё</h3><p>Чёткий контур, подходящая форма и внимательная работа с деталями.</p><span class="pill">Борода · Бритьё</span></article>
+      <article class="card"><div class="ava">03</div><h3>Текстура и длина</h3><p>Работа с длинными волосами, объёмом и естественным направлением укладки.</p><span class="pill">Текстура · Укладка</span></article>
+    </div>
+  </div>
+</section>
+
+<section id="work" class="rv">
+  <div class="wrap">
+    <h2 class="section-title">Наши работы</h2>
+    <p class="sub">Примеры направлений и стилей. В финальной версии здесь будут фотографии реальных работ мастеров.</p>
+    <div class="gal">
+      <div class="gal-item g1"><i>✂</i>Классика</div><div class="gal-item g2"><i>◈</i>Фейд</div><div class="gal-item g3"><i>〰</i>Текстура</div>
+      <div class="gal-item g4"><i>✦</i>Борода</div><div class="gal-item g5"><i>⌁</i>Укладка</div><div class="gal-item g6"><i>◌</i>Бритьё</div>
+    </div>
+  </div>
+</section>
+
+<section id="experience" class="rv">
+  <div class="wrap">
+    <h2 class="section-title">Комфортный визит — от начала до конца</h2>
+    <p class="sub">Понятный процесс без спешки и лишних вопросов.</p>
+    <div class="visit-grid">
+      <article class="visit"><strong>01</strong><h3>Обсуждаем форму</h3><p>Уточняем пожелания, привычную длину и особенности стрижки.</p></article>
+      <article class="visit"><strong>02</strong><h3>Работаем над деталями</h3><p>Подбираем форму и аккуратно выполняем стрижку или уход.</p></article>
+      <article class="visit"><strong>03</strong><h3>Показываем результат</h3><p>Обсуждаем укладку и даём рекомендации по домашнему уходу.</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="book" class="rv">
+  <div class="wrap">
+    <h2 class="section-title">Онлайн-запись</h2>
+    <p class="sub">Оставьте контакт и выберите услугу — администратор сможет подтвердить время после подключения сервиса записи.</p>
+    <div class="book">
+      <form id="bookingForm"><div aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden"><label>Leave this field empty<input name="website" tabindex="-1" autocomplete="off"></label></div>
+        <div class="fields">
+          <div><label for="service">Услуга</label><select id="service" name="service"><option>Мужская стрижка</option><option>Стрижка машинкой</option><option>Моделирование бороды</option><option>Королевское бритьё</option><option>Комплекс «КЕДР»</option><option>Отец + сын</option></select></div>
+          <div><label for="master">Мастер</label><select id="master" name="master"><option>Любой свободный мастер</option><option>Классические стрижки</option><option>Борода и бритьё</option><option>Текстура и длина</option></select></div>
+          <div><label for="clientName">Ваше имя</label><input id="clientName" name="name" autocomplete="name" required placeholder="Как к вам обращаться"></div>
+          <div><label for="clientPhone">Телефон или мессенджер</label><input id="clientPhone" name="contact" autocomplete="tel" required placeholder="+7 000 000-00-00"></div>
+        </div>
+        <button class="btn" type="submit">Оставить заявку ↗</button>
+      </form>
+      <div id="form-status" role="status" aria-live="polite"></div>
+      <p class="sub" style="font-size:.82rem;margin:18px 0 0">В этой демонстрационной версии запрос поступит в NORTH DIGITAL, а не в барбершоп. Для клиента подключается его собственный канал записи.</p>
+    </div>
+  </div>
+</section>
+
+<section id="faq" class="rv">
+  <div class="wrap">
+    <h2 class="section-title">Частые вопросы</h2>
+    <p class="sub">Коротко о визите и услугах.</p>
+    <details><summary>Нужно ли записываться заранее?</summary><p>Рекомендуем записаться заранее, чтобы выбрать удобное время. Возможность принять без записи зависит от текущей загрузки мастеров.</p></details>
+    <details><summary>Можно ли прийти с ребёнком?</summary><p>Условия детских стрижек и совместных визитов уточняются у администратора конкретного барбершопа.</p></details>
+    <details><summary>Можно ли перенести запись?</summary><p>Свяжитесь с барбершопом по телефону или в мессенджере. Правила переноса и отмены указываются при подключении онлайн-записи.</p></details>
+    <details><summary>Как подготовиться к первому визиту?</summary><p>Достаточно рассказать мастеру, какую длину и форму вы хотите. Можно показать несколько фотографий-примеров.</p></details>
+  </div>
+</section>
+
+<section id="contacts" class="rv">
+  <div class="wrap">
+    <h2 class="section-title">Контакты</h2>
+    <p class="sub">Добавим актуальные данные барбершопа перед публикацией коммерческой версии.</p>
+    <div class="contacts">
+      <div><h3>Адрес</h3><p>Укажите адрес заведения</p></div>
+      <div><h3>Часы работы</h3><p>Уточняются</p></div>
+      <div><h3>Связь</h3><p>Телефон и мессенджеры будут добавлены</p></div>
+    </div>
+    <div class="map">Здесь размещается карта с точным адресом барбершопа</div>
+  </div>
+</section>
+</main>
+
+<footer><strong>К Е Д Р</strong>Мужской барбершоп<small>Демонстрационный проект NORTH DIGITAL. Название, цены, услуги и содержание представлены как пример. Контакты, фотографии, реальные мастера и сервис записи добавляются после согласования с владельцем заведения.</small></footer>
+<div class="mobile-bar"><a class="btn" href="#book">Записаться онлайн</a></div>
+
+<script>
+document.documentElement.classList.add("js");
+var $=function(id){return document.getElementById(id)};
+var root=document.documentElement;
+try{var saved=localStorage.getItem("kedr-theme");if(saved==="dark"||saved==="light")root.dataset.theme=saved}catch(e){}
+function syncTheme(){var dark=root.dataset.theme==="dark";$("themeToggle").setAttribute("aria-pressed",String(dark));$("themeToggle").textContent=dark?"☼":"◐"}
+syncTheme();
+$("themeToggle").addEventListener("click",function(){var next=root.dataset.theme==="dark"?"light":"dark";root.dataset.theme=next;try{localStorage.setItem("kedr-theme",next)}catch(e){}syncTheme()});
+if("IntersectionObserver"in window){var io=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting){entry.target.classList.add("in");io.unobserve(entry.target)}})},{threshold:.08});document.querySelectorAll(".rv").forEach(function(node){io.observe(node)})}else{document.querySelectorAll(".rv").forEach(function(node){node.classList.add("in")})}
+$("bookingForm").addEventListener("submit",function(event){event.preventDefault();var status=$("form-status");status.textContent="Это демонстрационная версия сайта. Заявка не отправлена. Перед запуском подключим форму к контактам барбершопа или сервису онлайн-записи.";status.style.display="block"});
+</script>
+
+<script>
+(function(){
+  var formSelectors=["#leadForm","#bookingForm"];
+  var statusNode=function(){return document.querySelector("#toast")||document.querySelector("#form-status")};
+  var copyFor=function(path){
+    if(path.indexOf("/kedr")===0)return "Запрос отправлен команде NORTH DIGITAL. Это концепт: запись в реальном барбершопе ещё не создана.";
+    if(path.indexOf("/terra")===0)return "Запрос отправлен команде NORTH DIGITAL. Это концепт: бронь в реальном ресторане ещё не создана.";
+    if(path.indexOf("/apex")===0)return "Запрос отправлен команде NORTH DIGITAL. Получили ваше сообщение по концепту APEX.";
+    return "Спасибо! Запрос получен. Свяжемся по указанному контакту.";
+  };
+  document.addEventListener("submit",async function(event){
+    var form=event.target;
+    if(!form||!formSelectors.some(function(selector){return form.matches(selector)}))return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    if(!form.reportValidity())return;
+    var button=form.querySelector('button[type="submit"]');
+    var original=button?button.textContent:"Отправить";
+    var status=statusNode();
+    if(button){button.disabled=true;button.textContent="Отправляем..."}
+    if(status){status.textContent="Отправляем запрос...";status.style.display="block";status.classList.add("show")}
+    var payload=Object.fromEntries(new FormData(form).entries());
+    payload.page=location.pathname;
+    try{
+      var response=await fetch("/api/lead",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+      var result={};try{result=await response.json()}catch(ignore){}
+      if(!response.ok||!result.ok){
+        if(response.status===503)throw new Error("Канал уведомлений ещё не настроен. Заявка не отправлена.");
+        throw new Error("Не удалось отправить запрос. Попробуйте ещё раз или свяжитесь напрямую.");
+      }
+      if(status){status.textContent=copyFor(location.pathname);status.style.display="block";status.classList.add("show")}
+      form.reset();
+    }catch(error){
+      if(status){status.textContent=error.message||"Ошибка отправки. Попробуйте позже.";status.style.display="block";status.classList.add("show")}
+    }finally{
+      if(button){button.disabled=false;button.textContent=original}
+    }
+  },true);
+})();
+</script>
+
+</body>
+</html>
