@@ -31,6 +31,11 @@ export async function onRequestGet({ env }) {
 export async function onRequestPost({ request, env }) {
   const requestUrl = new URL(request.url);
   const origin = request.headers.get("Origin");
+  const contentLength = Number(request.headers.get("Content-Length") || 0);
+
+  if (contentLength > 12000) {
+    return json({ ok: false, error: "request_too_large" }, 413);
+  }
 
   if (origin) {
     try {
