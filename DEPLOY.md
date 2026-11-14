@@ -27,7 +27,7 @@ Cloudflare Pages публикует папку `public` как один сайт
 | Build command | `exit 0` |
 | Build output directory | `public` |
 
-5. Создай проект. Cloudflare выдаст адрес вида `имя-проекта.pages.dev`.
+5. Создай проект. Папка `functions/` должна оставаться в корне репозитория рядом с `public/` — не перемещай её внутрь `public/`. Cloudflare выдаст адрес вида `имя-проекта.pages.dev`.
 
 ## 2. Подключить Telegram для заявок
 
