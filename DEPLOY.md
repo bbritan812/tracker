@@ -22,10 +22,10 @@ Cloudflare Pages публикует папку `public` как один сайт
 | Настройка | Значение |
 |---|---|
 | Production branch | `main` |
-| Root directory | `public` |
+| Root directory | Leave blank / repository root |
 | Framework preset | `None` |
 | Build command | `exit 0` |
-| Build output directory | `.` |
+| Build output directory | `public` |
 
 5. Создай проект. Cloudflare выдаст адрес вида `имя-проекта.pages.dev`.
 
