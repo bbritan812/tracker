@@ -22,7 +22,7 @@ Cloudflare Pages публикует папку `public` как один сайт
 | Настройка | Значение |
 |---|---|
 | Production branch | `main` |
-| Root directory | Leave blank / repository root |
+| Root directory | Пусто (корень репозитория) |
 | Framework preset | `None` |
 | Build command | `exit 0` |
 | Build output directory | `public` |
